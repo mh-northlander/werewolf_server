@@ -1,23 +1,13 @@
-module.exports = {
-    JoinRoom: joinRoom,
-    ExitRoom: exitRoom,
-    ChangeRule:changeRule,
-    StartGame: startGame,
-}
+model = require('./../model')
 
 // join room
 function joinRoom(io, socketId){
     return function(data){
-        userInfoMap[data.userId] = new userInfo(
-          data.name, "none", true, socketId
-        );
-        var userNameList = [];
-        for(userId in userInfoMap){
-          userNameList.push(userInfoMap[userId].name);
-        }
-        io.emit('joinRoom', {value : userNameList});
+        room.joinUser(data.userId, new model.user.User(data.name, socketId));
+        io.emit('joinRoom', {value : room.getUserNameList()});
     }
 }
+
 
 // exit room
 function exitRoom(io){
@@ -40,13 +30,15 @@ function startGame(io){
     }
 }
 
+//// vars
+var room = new model.room.Room(0)
 // userInfoMap
 var userInfoMap = {};
 
-// userInfo
-function userInfo(name, role, live, socketId){
-  this.name = name;
-  this.role = role;
-  this.live = live;
-  this.socketId = socketId
+// export
+module.exports = {
+    JoinRoom: joinRoom,
+    ExitRoom: exitRoom,
+    ChangeRule:changeRule,
+    StartGame: startGame,
 }
