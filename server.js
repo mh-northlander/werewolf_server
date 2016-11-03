@@ -5,10 +5,7 @@ var io   = require('socket.io')(http);
 http.listen(3000)
 
 app.get("/", doReq);
-
 // var server = http.createServer(doReq).listen(portNum);
-
-var fs = require('fs');
 
 // socket
 var bg = require('./api/before_game')
@@ -25,6 +22,7 @@ console.log('Server running!');
 
 
 // GET "/"
+var fs = require('fs');
 function doReq(req, res){
     res.writeHead(200, {'Content-Type' : 'text/html'});
     res.end(fs.readFileSync(__dirname + '/index.html', 'utf-8'));
