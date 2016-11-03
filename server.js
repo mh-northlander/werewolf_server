@@ -11,11 +11,11 @@ app.get("/", doReq);
 var bg = require('./api/before_game')
 
 io.on('connection', function(socket) {
-    socket.on('joinRoom', bg.JoinRoom(io));
-
-    socket.on('exitRoom', function(data) {
-        io.emit('server_to_client', {value : "fuga"});
-    });
+    // before game
+    socket.on('joinRoom',   bg.JoinRoom(io));
+    socket.on('exitRoom',   bg.ExitRoom(io));
+    socket.on('changeRule', bg.ChangeRule(io));
+    socket.on('startGame',  bg.StartGame(io));
 });
 
 console.log('Server running!');

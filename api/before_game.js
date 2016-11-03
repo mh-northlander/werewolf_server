@@ -1,13 +1,34 @@
 module.exports = {
-    // join room
-    JoinRoom: function(io){
-        return function(data){
-            io.emit('server_to_client', {value : "hoge"});
-        }
-    },
+    JoinRoom: joinRoom,
+    ExitRoom: exitRoom,
+    ChangeRule:changeRule,
+    StartGame: startGame,
+}
 
-    // exit room
-    ExitRoom: function(data){
-        io.emit('server_to_client', {value : "hoge"});
-    },
+// join room
+function joinRoom(io){
+    return function(data){
+        io.emit('joinRoom', {value : "hoge"});
+    }
+}
+
+// exit room
+function exitRoom(io){
+    return function(data){
+        io.emit('exitRoom', {value : "fuga"});
+    }
+}
+
+// change rule
+function changeRule(io){
+    return function(data){
+        io.emit('changeRule', {value : "piyo"});
+    }
+}
+
+// start game
+function startGame(io){
+    return function(data){
+        io.emit('startGame', {value : "pohe"});
+    }
 }
