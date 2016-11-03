@@ -6,9 +6,16 @@ module.exports = {
 }
 
 // join room
-function joinRoom(io){
+function joinRoom(io, socketId){
     return function(data){
-        io.emit('joinRoom', {value : "hoge"});
+        userInfoMap[data.userId] = new userInfo(
+          data.name, "none", true, socketId
+        );
+        var userNameList = [];
+        for(userId in userInfoMap){
+          userNameList.push(userInfoMap[userId].name);
+        }
+        io.emit('joinRoom', {value : userNameList});
     }
 }
 
@@ -31,4 +38,15 @@ function startGame(io){
     return function(data){
         io.emit('startGame', {value : "pohe"});
     }
+}
+
+// userInfoMap
+var userInfoMap = {};
+
+// userInfo
+function userInfo(name, role, live, socketId){
+  this.name = name;
+  this.role = role;
+  this.live = live;
+  this.socketId = socketId
 }

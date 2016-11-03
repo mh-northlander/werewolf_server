@@ -12,7 +12,7 @@ var bg = require('./api/before_game')
 
 io.on('connection', function(socket) {
     // before game
-    socket.on('joinRoom',   bg.JoinRoom(io));
+    socket.on('joinRoom',   bg.JoinRoom(io, socket.id));
     socket.on('exitRoom',   bg.ExitRoom(io));
     socket.on('changeRule', bg.ChangeRule(io));
     socket.on('startGame',  bg.StartGame(io));
