@@ -1,21 +1,26 @@
-class User{
-    constructor(name, socketId){
-        this._socketId = socketId; //
+// requires
+// model = require('./../model');
 
-        this._name = name;   // 表示名称
-        this._role = null; // 役職
-        this._alive = true;  // 生死
-    }
+// user
+function User(user, socketId){
+    var user = Object.create(User.prototype);
 
-    set name(name){ this._name = name; }
-    get name(){ return this._name; }
+    user.socketId = socketId;
+    user.name = name;
 
-    set role(role){ this._role = role; }
-    get role(){ return this._role; }
+    user.alive = true;
+    user.role = "";
 
-    set alive(alive){ this._alive = alive; }
-    get alive(){ return this._alive; }
+    return user;
 }
+//// prototype checker (not needed now)
+// User.isUser = function(obj,type){
+//     if(!User.prototype.isPrototypeOf(obj)){
+//         return false;
+//     }
+//     return type ? obj.type === type : true;
+// };
+User.prototype = {};
 
 module.exports = {
     User: User,
