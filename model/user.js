@@ -3,7 +3,7 @@ class User{
         this._socketId = socketId; //
 
         this._name = name;   // 表示名称
-        this._role = "none"; // 役職
+        this._role = null; // 役職
         this._alive = true;  // 生死
     }
 
