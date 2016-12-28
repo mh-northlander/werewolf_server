@@ -1,5 +1,5 @@
 var server = require('http').createServer(doReq);
-var io = require('socket.io')(server);
+var io = require('socket.io').listen(server);
 
 server.listen(3000) // connect
 
