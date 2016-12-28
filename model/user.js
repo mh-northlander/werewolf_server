@@ -1,9 +1,10 @@
 class User{
     constructor(name, socketId){
-        this._name = name;
-        this._role = "none";
-        this._alive = true;
-        this._socketId = socketId;
+        this._socketId = socketId; //
+
+        this._name = name;   // 表示名称
+        this._role = "none"; // 役職
+        this._alive = true;  // 生死
     }
 
     set name(name){ this._name = name; }
