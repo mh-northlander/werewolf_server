@@ -26,7 +26,11 @@ function changeRule(io){
 // start game
 function startGame(io){
     return function(data){
-        io.emit('startGame', {value : "pohe"});
+        for(var userId in room.users){
+            var userSocketId = room.users[userId].socketId;
+            var userRole = room.users[userId].role;
+            io.to(userSocketId).emit('startGame', {value : userRole});
+        }
     }
 }
 
