@@ -1,19 +1,24 @@
 // requires
 // model = require('./../model');
 
-// user
-function User(user, socketId){
+// exports
+module.exports = {
+    User: User,
+}
+
+// User
+function User(userName, socketId){
     var user = Object.create(User.prototype);
 
     user.socketId = socketId;
-    user.name = name;
+    user.name = userName;
 
     user.alive = true;
     user.role = "";
 
     return user;
 }
-//// prototype checker (not needed now)
+// // prototype checker よくわからｎ
 // User.isUser = function(obj,type){
 //     if(!User.prototype.isPrototypeOf(obj)){
 //         return false;
@@ -21,7 +26,3 @@ function User(user, socketId){
 //     return type ? obj.type === type : true;
 // };
 User.prototype = {};
-
-module.exports = {
-    User: User,
-}
