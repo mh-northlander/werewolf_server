@@ -17,7 +17,7 @@ function Room(roomId){
 
 Room.prototype = {
     // room
-    openRoom: function(){} // for future implementation
+    openRoom: function(){}, // for future implementation
     closeRoom: function(){
         // this func resets itself,
         // since currntly we use one global room.
