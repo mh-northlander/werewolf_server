@@ -5,15 +5,12 @@ Role = require('./role');
 // exports
 module.exports = Villager;
 
-
 // villager
-var villagerType = "villager";
+Villager.Name = "villager";
 
 function Villager(){
     var vil = Object.create(Villager.prototype);
-    Object.assign(vil, Role(villagerType))
-
-    vil.chatLog = [];
+    Object.assign(vil, Role(Villager.Name))
 
     return vil;
 }
@@ -22,15 +19,11 @@ Villager.prototype = {
     team       : consts.team.Human,
     fromSeer   : consts.fromSeer.Human,
     fromMedium : consts.fromSeer.Human,
-
-    Chat : function(message){
-        this.chatLog.push(message);
-    },
 }
 
 // isVillager
 Villager.isVillager = function(obj){
-    return Role.isRole(obj, villagerType);
+    return Role.isRole(obj, Villager.Name);
 };
 
 // Villager inherits Role

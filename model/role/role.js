@@ -8,6 +8,10 @@ module.exports = Role;
 function Role(type){
     var role = Object.create(Role.prototype);
     role.type = type;
+
+    role.chatLog = [];
+    role.actionLog = [];
+
     return role;
 }
 
@@ -15,6 +19,14 @@ Role.prototype = {
     team       : consts.team.None,
     fromSeer   : consts.fromSeer.None,
     fromMedium : consts.fromSeer.None,
+
+    Chat : function(message){
+        this.chatLog.push(message);
+    },
+
+    logAction : function(act){
+        this.logAction.push(act);
+    },
 };
 
 /* memo

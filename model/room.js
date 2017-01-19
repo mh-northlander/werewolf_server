@@ -16,6 +16,8 @@ function Room(roomId){
 }
 
 Room.prototype = {
+    // room
+    openRoom: function(){} // for future implementation
     closeRoom: function(){
         // this func resets itself,
         // since currntly we use one global room.
@@ -23,6 +25,7 @@ Room.prototype = {
         this.users = {};
     },
 
+    // user
     addUser: function(userId, user){
         if(this.masterId == null){
             this.masterId = userId;
