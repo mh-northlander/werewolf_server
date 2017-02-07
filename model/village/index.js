@@ -1,0 +1,1 @@
+exports.Village = require('./village');

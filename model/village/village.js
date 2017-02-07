@@ -1,9 +1,9 @@
 // imports
-phase = require('./phase')
-user = require('./user')
+phase = require('../phase');
+user = require('../user');
 
 // exports
-module.exports = Village
+module.exports = Village;
 
 // Village
 function Village(villageId){
@@ -13,7 +13,7 @@ function Village(villageId){
     village.masterId = null;
     village.users = {};
     village.rule = {};
-    village.phase = {};
+    village.phase = phase();
 
     return village;
 }

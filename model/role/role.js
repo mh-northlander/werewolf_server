@@ -10,7 +10,6 @@ function Role(type){
     role.type = type;
 
     role.chatLog = [];
-    role.actionLog = [];
 
     return role;
 }
@@ -22,10 +21,6 @@ Role.prototype = {
 
     Chat : function(message){
         this.chatLog.push(message);
-    },
-
-    logAction : function(act){
-        this.logAction.push(act);
     },
 };
 

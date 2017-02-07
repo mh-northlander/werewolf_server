@@ -20,6 +20,9 @@ io.on('connection', function(socket) {
     io.emit('connectionEstablished', {}) // 通知
     socket.on('disconnection', function(){})
 
+    // for test
+    socket.on('phaseShiftTest', bg.PhaseShift(io));
+
     // before game
     socket.on('joinRoom',   bg.JoinRoom(io, socket.id));
     socket.on('exitRoom',   bg.ExitRoom(io));

@@ -7,8 +7,25 @@ module.exports = {
     ExitRoom: exitRoom,
     ChangeRule:changeRule,
     StartGame: startGame,
+
+    PhaseShift: phaseShift,
 }
 
+// for test
+function phaseShift(io){
+    return function(){
+        console.log("shift..");
+        village.phase.phaseShift();
+        io.emit('phaseShiftTest', {name : village.phase.dayPhaseName()});
+
+        if(village.phase.secCount > 0){
+            console.log("start count" + village.phase.secCount);
+            setTimeout(() => {
+                phaseShift(io)();
+            }, village.phase.secCount*1000);
+        }
+    }
+}
 
 // join room
 function joinRoom(io, socketId){
@@ -40,11 +57,14 @@ function startGame(io){
             var userRole = village.users[userId].role;
             io.to(userSocketId).emit('startGame', {value : userRole});
         }
+
+        village.phase.phaseShift();
+        io.emit('phaseShiftTest', {name : village.phase.dayPhaseName()});
     }
 }
 
-//// vars
-var village = new model.Village(0);
+//// global vars
+var village = model.Village.Village(0);
 
 // userInfoMap
 var userInfoMap = {};

@@ -22,6 +22,7 @@
       </form>
       <form class="form-inline">
         <button type="button" class="btn btn-primary" id="gameStart">gameStart</button>
+        <button type="button" class="btn btn-primary" id="phaseShift">phaseShift</button>
       </form>
       <div id="chatLogs"></div>
     </div>
@@ -30,25 +31,31 @@
       var socket = io.connect();
 
       socket.on("joinRoom", function(data){
-          appendMsg(data.value)
+        appendMsg(data.value)
       });
       socket.on("startGame", function(data){
-          appendMsg("あなたは　" + data.value + "です。");
+        appendMsg("あなたは" + data.value + "です。");
       });
+      socket.on("phaseShiftTest", function(data){
+        appendMsg("phase:" + data.name);
+      })
 
       function appendMsg(text) {
-      $("#chatLogs").append("<div>" + text + "</div>");
+        $("#chatLogs").append("<div>" + text + "</div>");
       }
 
       $("form").submit(function(e){
-      var message = $("#msgForm").val();
-      $("#msgForm").val('');
-      socket.emit("joinRoom", {userId : Math.random().toString(36).slice(-8), name: message});
-      e.preventDefault();
+        var message = $("#msgForm").val();
+        $("#msgForm").val('');
+        socket.emit("joinRoom", {userId : Math.random().toString(36).slice(-8), name: message});
+        e.preventDefault();
       });
 
       $("#gameStart").click(function(e){
         socket.emit("startGame");
+      });
+      $("#phaseShift").click(function(e){
+        socket.emit("phaseShiftTest");
       });
     </script>
   </body>

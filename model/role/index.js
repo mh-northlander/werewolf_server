@@ -1,6 +1,5 @@
 exports.constants = require('./constants');
 
-
 // role class factories
 exports.Role     = require('./role');
 
