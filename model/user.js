@@ -11,7 +11,7 @@ function User(userName, socketId){
     user.name = userName;
 
     user.alive = true;
-    user.role = "";
+    user.role = {};
 
     return user;
 }
