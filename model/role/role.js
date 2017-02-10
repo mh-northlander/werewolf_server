@@ -1,8 +1,9 @@
+// exports
+module.exports = Role;
+
 // imports
 consts = require('./constants');
 
-// exports
-module.exports = Role;
 
 // Role
 function Role(type){

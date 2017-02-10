@@ -1,9 +1,10 @@
+// exports
+module.exports = Seer;
+
 // imports
 consts = require('./constants');
 Role = require('./role');
 
-// exports
-module.exports = Seer;
 
 // seer
 Seer.Name = "seer";

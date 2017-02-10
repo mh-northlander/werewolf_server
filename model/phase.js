@@ -1,7 +1,7 @@
-// imports
-
 // exports
 module.exports = Phase;
+
+// imports
 
 // const
 const dayTime = 7;

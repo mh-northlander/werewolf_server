@@ -1,6 +1,3 @@
-// requires
-model = require('./../model')
-
 // exports
 module.exports = {
     JoinRoom: joinRoom,
@@ -10,6 +7,9 @@ module.exports = {
 
     PhaseShift: phaseShift,
 }
+
+// imports
+model = require('./../model')
 
 // for test
 function phaseShift(io){

@@ -1,9 +1,10 @@
+// exports
+module.exports = Guard;
+
 // imports
 consts = require('./constants');
 Role = require('./role');
 
-// exports
-module.exports = Guard;
 
 // guard
 Guard.Name = "guard";

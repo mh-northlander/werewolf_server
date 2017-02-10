@@ -1,9 +1,10 @@
+// exports
+module.exports = Werewolf;
+
 // imports
 consts = require('./constants');
 Role = require('./role');
 
-// exports
-module.exports = Werewolf;
 
 // werewolf
 Werewolf.Name = "werewolf";

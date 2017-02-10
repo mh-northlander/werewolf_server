@@ -1,8 +1,9 @@
+// exports
+module.exports = User;
+
 // imports
 role = require('./role')
 
-// exports
-module.exports = User;
 
 // User
 function User(userName, socketId){

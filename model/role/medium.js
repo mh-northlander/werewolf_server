@@ -1,9 +1,10 @@
+// exports
+module.exports = Medium;
+
 // imports
 consts = require('./constants');
 Role = require('./role');
 
-// exports
-module.exports = Medium;
 
 // medium
 Medium.Name = "medium";

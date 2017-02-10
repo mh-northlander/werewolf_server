@@ -1,9 +1,10 @@
+// exports
+module.exports = Village;
+
 // imports
 phase = require('../phase');
 user = require('../user');
 
-// exports
-module.exports = Village;
 
 // Village
 function Village(villageId){

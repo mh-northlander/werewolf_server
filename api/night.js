@@ -1,4 +1,4 @@
-// requires
+// import
 model = require('./../model');
 
 // actionCandidate

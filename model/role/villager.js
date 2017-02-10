@@ -1,9 +1,10 @@
+// exports
+module.exports = Villager;
+
 // imports
 consts = require('./constants');
 Role = require('./role');
 
-// exports
-module.exports = Villager;
 
 // villager
 Villager.Name = "villager";
