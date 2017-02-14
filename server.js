@@ -27,6 +27,11 @@ io.on('connection', function(socket) {
 
     // for test
     socket.on('phaseShiftTest', bg.PhaseShift(io, vil));
+    socket.on('ackTest1', function(){
+        console.log("acktest1")
+        // use in client side will logs server side
+        socket.emit('ackTest2', function(data){ console.log(data); })
+    })
 
     // before game
     socket.on('joinRoom',   bg.JoinRoom(io, vil, socket.id));

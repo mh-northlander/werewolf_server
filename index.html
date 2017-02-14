@@ -23,6 +23,7 @@
       <form class="form-inline">
         <button type="button" class="btn btn-primary" id="gameStart">gameStart</button>
         <button type="button" class="btn btn-primary" id="phaseShift">phaseShift</button>
+        <button type="button" class="btn btn-primary" id="ackTest">ack test</button>
       </form>
       <div id="chatLogs"></div>
     </div>
@@ -36,9 +37,6 @@
       socket.on("startGame", function(data){
         appendMsg("あなたは" + data.value + "です。");
       });
-      socket.on("phaseShiftTest", function(data){
-        appendMsg("phase:" + data.name);
-      })
 
       function appendMsg(text) {
         $("#chatLogs").append("<div>" + text + "</div>");
@@ -54,9 +52,22 @@
       $("#gameStart").click(function(e){
         socket.emit("startGame");
       });
+
+      // test
+      socket.on("phaseShiftTest", function(data){
+        appendMsg("phase:" + data.name);
+      })
       $("#phaseShift").click(function(e){
         socket.emit("phaseShiftTest");
       });
+      $("#ackTest").click(function(e){
+        socket.emit("ackTest1");
+      });
+      socket.on("ackTest2", function(fn){
+        appendMsg("acktest")
+        fn("yatta!");
+      })
+
     </script>
   </body>
 </html>
