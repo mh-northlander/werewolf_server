@@ -15,8 +15,8 @@ model = require('./../model')
 function phaseShift(io, village){
     return function(){
         console.log("shift..");
-        village.phase.phaseShift();
-        io.emit('phaseShiftTest', {name : village.phase.dayPhaseName()});
+        village.phase.phaseShift(village.phase.nextPhase());
+        io.emit('phaseShiftTest', {name : village.phase.gamePhase});
 
         if(village.phase.secCount > 0){
             console.log("start count" + village.phase.secCount);
@@ -59,8 +59,10 @@ function startGame(io, village){
             io.to(userSocketId).emit('startGame', {value : userRole});
         }
 
-        village.phase.phaseShift();
-        io.emit('phaseShiftTest', {name : village.phase.dayPhaseName()});
+        // phaseShift(next, dayTime, nightTime)
+        console.log(village.phase.nextPhase());
+        village.phase.phaseShift(village.phase.nextPhase());
+        io.emit('phaseShiftTest', {name : village.phase.gamePhase});
     }
 }
 

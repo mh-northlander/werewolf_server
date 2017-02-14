@@ -4,54 +4,74 @@ module.exports = Phase;
 // imports
 
 // const
-const dayTime = 7;
-const nightTime = 7;
+const DefaultDayTime = 7;   // sec
+const DefaultNightTime = 7; // sec
 
-// info, talk, vote, act
-const gamePhaseList = ["before", "during", "after"];
-const dayPhaseList = ["morning", "afternoon", "evening", "night"];
+const GamePhase = {
+    BEFORE    : "before",     // setting
+    FNIGHT    : "firstNight",
+    MORNING   : "morning",
+    AFTERNOON : "afternoon",  // talk
+    EVENING   : "evening",    // vote
+    NIGHT     : "night",      // action
+    AFTER     : "after",      // game end
+};
 
 // Phase
 function Phase(){
     var phase = Object.create(Phase.prototype);
 
-    phase.phase = "before";
-    phase.phaseId = -1;
+    phase.gamePhase = GamePhase.BEFORE;
 
     phase.dayCount = 0;
-    phase.secCount = -1;
+    phase.secCount = -1; // existing time of current phase (night and afternoon)
 
     return phase;
 }
 
 Phase.prototype = {
-    phaseShift : function(){
-        // phase
-        if(this.phase == "before"){
-            this.phase = "during";
-            this.phaseId = 0;
-        } else {
-            this.phaseId = (this.phaseId+1) % 4;
+    nextPhase : function(){
+        switch(this.gamePhase){
+        case GamePhase.BEFORE:
+            return GamePhase.FNIGHT;
+            break;
+        case GamePhase.FNIGHT:
+            return GamePhase.MORNING;
+            break;
+        case GamePhase.MORNING:
+            return GamePhase.AFTERNOON;
+            break;
+        case GamePhase.AFTERNOON:
+            return GamePhase.EVENING;
+            break;
+        case GamePhase.EVENING:
+            return GamePhase.NIGHT;
+            break;
+        case GamePhase.NIGHT:
+            return GamePhase.MORNING;
+            break;
+        default:
         }
+    },
+
+    phaseShift : function(nextP, dayTime, nightTime){
+        // phase shift
+        this.gamePhase = nextP;
 
         // day count
-        if(this.phaseId == 0){
+        if(nextP == GamePhase.MORNING){
             this.dayCount += 1;
         }
 
-        // sec count
-        if(this.phaseId == 1){
-            this.secCount = dayTime;
-        } else if(this.phaseId == 3){
-            this.secCount = nightTime;
+        // set sec count
+        if(nextP == GamePhase.NIGHT){
+            this.secCount = dayTime ? dayTime : DefaultNightTime;
+        } else if (nextP == GamePhase.AFTERNOON){
+            this.secCount = nightTime ? nightTime : DefaultDayTime;
         } else {
             this.secCount = -1;
         }
     },
-
-    dayPhaseName : function(){
-        return dayPhaseList[this.phaseId];
-    }
 };
 
 Phase.isPhase = function(obj,type){
