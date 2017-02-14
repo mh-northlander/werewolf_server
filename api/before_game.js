@@ -9,7 +9,6 @@ module.exports = {
 }
 
 // imports
-model = require('./../model')
 
 // for debug >>>>
 function phaseShift(io, village){
@@ -29,9 +28,9 @@ function phaseShift(io, village){
 // <<<< for debug
 
 // join room
-function joinRoom(io, village, socketId){
+function joinRoom(io, village, socket){
     return function(data){
-        village.addUser(data.userId, new model.User(data.name, socketId));
+        village.addUser(data.userId, data.name, socket.id);
         io.emit('joinRoom', {value : village.getUserNameList()});
     }
 }

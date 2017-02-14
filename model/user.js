@@ -6,12 +6,12 @@ role = require('./role')
 
 
 // User
-function User(userName, socketId){
+function User(userId, userName, socketId){
     var user = Object.create(User.prototype);
 
     // info
     user.socketId = socketId;
-    user.id = "hoge";
+    user.id = userId;
     user.name = userName;
     user.alive = true;
 

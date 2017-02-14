@@ -28,14 +28,14 @@ Village.prototype = {
     },
 
     // user
-    addUser: function(userId, us){
-        if(!model.User.isUser(us)){
-            console.log('addUser: invalid user');
-        }
-
-        this.users[userId] = us;
-        if(this.masterId == null){
-            this.masterId = userId;
+    addUser: function(userId, name, socketId){
+        if(!(userId in this.users)){
+            this.users[userId] = new model.User(userId, name, socketId);
+            if(this.masterId == null){
+                this.masterId = userId;
+            }
+        } else { // user already exists. TODO: maybe done in 'reconnect' func
+            this.users[userId].socketId = socketId
         }
     },
     removeUser: function(userId){

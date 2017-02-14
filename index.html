@@ -18,7 +18,7 @@
           <label for="msgForm"> message: </label>
           <input type="text" class="form-control" id="msgForm">
         </div>
-        <button type="submit" class="btn btn-primary">submit</button>
+        <button type="submit" class="btn btn-primary">join room</button>
       </form>
       <form class="form-inline">
         <button type="button" class="btn btn-primary" id="gameStart">gameStart</button>
@@ -29,6 +29,10 @@
     </div>
 
     <script type="text/javascript">
+      function randomString(length) {
+        return Math.round((Math.pow(36, length + 1) - Math.random() * Math.pow(36, length))).toString(36).slice(1);
+      };
+      var userId = randomString(8)
       var socket = io.connect();
 
       socket.on("joinRoom", function(data){
@@ -45,7 +49,7 @@
       $("form").submit(function(e){
         var message = $("#msgForm").val();
         $("#msgForm").val('');
-        socket.emit("joinRoom", {userId : Math.random().toString(36).slice(-8), name: message});
+        socket.emit("joinRoom", {userId : userId, name: message});
         e.preventDefault();
       });
 

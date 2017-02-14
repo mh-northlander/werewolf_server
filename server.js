@@ -16,10 +16,14 @@ var bg = require('./api/before_game')
   io.to(socket.id).emit(~~)
 */
 
+//// util
+function randomString(length) {
+    return Math.round((Math.pow(36, length + 1) - Math.random() * Math.pow(36, length))).toString(36).slice(1);
+};
+
 //// global village
 var village = require('./village/')
-var vil = village.Village(0);
-
+var vil = village.Village(randomString(32));
 
 io.on('connection', function(socket) {
     io.emit('connectionEstablished', {}) // 通知
@@ -34,7 +38,7 @@ io.on('connection', function(socket) {
     })
 
     // before game
-    socket.on('joinRoom',   bg.JoinRoom(io, vil, socket.id));
+    socket.on('joinRoom',   bg.JoinRoom(io, vil, socket));
     socket.on('exitRoom',   bg.ExitRoom(io, vil));
     socket.on('changeRule', bg.ChangeRule(io, vil));
     socket.on('startGame',  bg.StartGame(io, vil));
@@ -46,6 +50,7 @@ io.on('connection', function(socket) {
 });
 
 console.log('Server running!');
+
 
 // GET "/"
 var fs = require('fs');
