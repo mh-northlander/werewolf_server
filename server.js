@@ -16,18 +16,23 @@ var bg = require('./api/before_game')
   io.to(socket.id).emit(~~)
 */
 
+//// global village
+var model = require('./model/')
+var village = model.Village.Village(0);
+
+
 io.on('connection', function(socket) {
     io.emit('connectionEstablished', {}) // 通知
     socket.on('disconnection', function(){})
 
     // for test
-    socket.on('phaseShiftTest', bg.PhaseShift(io));
+    socket.on('phaseShiftTest', bg.PhaseShift(io, village));
 
     // before game
-    socket.on('joinRoom',   bg.JoinRoom(io, socket.id));
-    socket.on('exitRoom',   bg.ExitRoom(io));
-    socket.on('changeRule', bg.ChangeRule(io));
-    socket.on('startGame',  bg.StartGame(io));
+    socket.on('joinRoom',   bg.JoinRoom(io, village, socket.id));
+    socket.on('exitRoom',   bg.ExitRoom(io, village));
+    socket.on('changeRule', bg.ChangeRule(io, village));
+    socket.on('startGame',  bg.StartGame(io, village));
 
     // morning
     // afternoon
