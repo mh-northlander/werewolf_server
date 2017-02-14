@@ -1,6 +1,6 @@
 // class
 exports.User = require('./user');
-exports.Village = require('./village/');
+exports.Phase = require('./phase')
 
 //
 exports.role = require('./role/');

@@ -11,7 +11,7 @@ module.exports = {
 // imports
 model = require('./../model')
 
-// for test >>>>
+// for debug >>>>
 function phaseShift(io, village){
     return function(){
         console.log("shift..");
@@ -26,7 +26,7 @@ function phaseShift(io, village){
         }
     }
 }
-// <<<< for test
+// <<<< for debug
 
 // join room
 function joinRoom(io, village, socketId){

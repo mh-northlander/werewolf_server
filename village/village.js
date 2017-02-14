@@ -2,8 +2,7 @@
 module.exports = Village;
 
 // imports
-phase = require('../phase');
-user = require('../user');
+model = require('../model/');
 
 
 // Village
@@ -14,7 +13,7 @@ function Village(villageId){
     village.masterId = null;
     village.users = {};
     village.rule = {};
-    village.phase = phase();
+    village.phase = model.Phase();
 
     return village;
 }
@@ -30,7 +29,7 @@ Village.prototype = {
 
     // user
     addUser: function(userId, us){
-        if(!user.isUser(us)){
+        if(!model.User.isUser(us)){
             console.log('addUser: invalid user');
         }
 
