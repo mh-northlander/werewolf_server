@@ -20,6 +20,15 @@ Seer.prototype = {
     team       : consts.team.Human,
     fromSeer   : consts.fromSeer.Human,
     fromMedium : consts.fromSeer.Human,
+    candidateCondition: ()=>{
+        return {
+            alive: true,
+            except: this.actionLog.reduce((ret,val)=>{
+                ret.push(val.userId);
+                return ret;
+            }, []),
+        };
+    },
 }
 
 // isSeer

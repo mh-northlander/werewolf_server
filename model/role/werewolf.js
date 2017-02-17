@@ -20,6 +20,12 @@ Werewolf.prototype = {
     team       : consts.team.Werewolf,
     fromSeer   : consts.fromSeer.Werewolf,
     fromMedium : consts.fromSeer.Werewolf,
+    candidateCondition: ()=>{
+        return {
+            alive: true,
+            notWolf: true,
+        };
+    },
 }
 
 // isWerewolf

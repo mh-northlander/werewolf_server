@@ -38,14 +38,14 @@
       socket.on("connectionEstablished", function(){
         appendMsg("connect!");
       });
-      socket.on("memberChanged", function(data){
-        appendMsg(data.value)
+      socket.on("memberChanged", function(list){
+        appendMsg(list)
       });
       socket.on("phaseChange", function(data){
         appendMsg(data.phase + " of day " + data.dayCount + ", sec:" + data.timeCount);
       });
-      socket.on("startGame", function(data){
-        appendMsg("あなたは" + data.value + "です。");
+      socket.on("roleAck", function(roleName){
+        appendMsg("あなたは" + roleName + "です。");
       });
 
       function appendMsg(text) {

@@ -20,6 +20,7 @@ Guard.prototype = {
     team       : consts.team.Human,
     fromSeer   : consts.fromSeer.Human,
     fromMedium : consts.fromSeer.Human,
+    candidateCondition: ()=>{ return { alive: true }; },
 }
 
 // isGuard

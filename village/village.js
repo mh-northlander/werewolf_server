@@ -32,16 +32,19 @@ Village.prototype = {
     },
 
     // user
-    addUser: function(userId, name, socketId){
+    addUser: function(userId, socketId, name){
         if(!(userId in this.users)){
             this.users[userId] = new model.User(userId, name, socketId);
             if(this.masterId == null){
                 this.masterId = userId;
             }
         }
-        // else { // user already exists. TODO: maybe done in 'reconnect' func
-        //     this.users[userId].socketId = socketId
-        // }
+    },
+    updateUser: function(userId, socketId, name){
+        if(!(userId in this.users)){ return; }
+
+        this.users[userId].name = name;
+        this.users[userId].socketId = socketId;
     },
     removeUser: function(userId){
         delete this.users[userId];
@@ -67,6 +70,19 @@ Village.prototype = {
         return this.phase
     },
 
+    // action
+    listActionCandidates(userId){
+        /* object condition
+           alive : bool
+           notWolf: bool
+           except: [userId]
+         */
+        cond = this.users[userId].candidateCondition();
+        return this.users.reduce((ret,val)=>{
+            return ret;
+        }, []);
+    },
+
 
     // info
     masterUser: function(){
@@ -74,14 +90,6 @@ Village.prototype = {
             return this.users[this.masterId];
         }
         // return {};
-    },
-
-    getUserNameList: function(){
-        var res = [];
-        for(var userId in this.users){
-            res.push(this.users[userId].name)
-        }
-        return res;
     },
 };
 

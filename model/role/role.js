@@ -6,11 +6,12 @@ consts = require('./constants');
 
 
 // Role
-function Role(type){
+function Role(type = "none"){
     var role = Object.create(Role.prototype);
+
     role.type = type;
 
-    role.chatLog = [];
+    role.actionLog = [];
 
     return role;
 }
@@ -19,6 +20,7 @@ Role.prototype = {
     team       : consts.team.None,
     fromSeer   : consts.fromSeer.None,
     fromMedium : consts.fromSeer.None,
+    candidateCondition: ()=>{ return {}; },
 
     Chat : function(message){
         this.chatLog.push(message);
