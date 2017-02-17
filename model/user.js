@@ -18,6 +18,7 @@ function User(userId, userName, socketId){
     user.readyToShift = false;
 
     user.role = role.Role(); // null role
+    user.chatRoom = userId;
     user.log = {};
 
     return user;

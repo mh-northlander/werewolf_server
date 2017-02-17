@@ -4,3 +4,9 @@ exports.type = {
     OTHER    : "other",
     NONE     : "none",
 };
+
+exports.chat = {
+    personal : "personal",
+
+    wolf     : "wolf",
+};

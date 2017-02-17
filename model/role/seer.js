@@ -17,11 +17,11 @@ function Seer(){
 }
 
 Seer.prototype = {
-    team   : common.HUMAN,
+    team   : common.type.HUMAN,
     isWolf : false,
 
-    fromSeer   : common.HUMAN,
-    fromMedium : common.HUMAN,
+    fromSeer   : common.type.HUMAN,
+    fromMedium : common.type.HUMAN,
 
     candidateCondition: ()=>{
         return {

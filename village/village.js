@@ -24,7 +24,7 @@ function Village(villageId){
 
 Village.prototype = {
     //
-    closeVillage: ()=>{
+    closeVillage: function(){
         // this func resets itself,
         // since currently we use one global vil.
         this.masterId = null;

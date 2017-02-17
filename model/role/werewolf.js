@@ -17,11 +17,12 @@ function Werewolf(){
 }
 
 Werewolf.prototype = {
-    team   : common.WEREWOLF,
-    isWolf : true,
+    team     : common.type.WEREWOLF,
+    isWolf   : true,
+    chatRoom : common.chat.wolf,
 
-    fromSeer   : common.WEREWOLF,
-    fromMedium : common.WEREWOLF,
+    fromSeer   : common.type.WEREWOLF,
+    fromMedium : common.type.WEREWOLF,
 
     candidateCondition: ()=>{
         return {

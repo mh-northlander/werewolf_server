@@ -11,24 +11,20 @@ function Role(type = "none"){
 
     role.type = type;
 
-    role.chatLog = [];
     role.actionLog = [];
 
     return role;
 }
 
 Role.prototype = {
-    team   : common.NONE,
-    isWolf : false,
+    team     : common.type.NONE,
+    isWolf   : false,
+    chatRoom : common.chat.personal,
 
-    fromSeer   : common.NONE,
-    fromMedium : common.NONE,
+    fromSeer   : common.type.NONE,
+    fromMedium : common.type.NONE,
 
     candidateCondition: ()=>{ return {}; },
-
-    Chat : function(message){
-        this.chatLog.push(message);
-    },
 };
 
 /* memo

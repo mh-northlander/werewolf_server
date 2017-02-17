@@ -52,6 +52,8 @@ function startGame(io, socket, village){
             io.to(userSocketId).emit('roleAck', userRole.type);
         }
 
+        // set chat room : TODO
+
         // shift to first night
         phase = village.shiftPhase(model.Phase.GamePhase.NIGHT)
         io.sockets.emit("phaseChange", {
