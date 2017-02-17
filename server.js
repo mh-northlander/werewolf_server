@@ -19,46 +19,57 @@ var af = require('./api/afternoon')
 var ev = require('./api/evening')
 var ni = require('./api/night')
 var co = require('./api/common')
-/* // memo
-  var room = io.of('roomName'); // make namespace
-  socket.join('roomName') // join room
-  socket.leave('roomName') // leave
-  io.to('roomName').emit(~~)
+/* // memo io
+   io = require("socket.io")()               // io: Server
+   io.on("connection", function(soc){ ~~ }); // soc: Socket
 
-  io.to(socket.id).emit(~~)
+   var hoge = io.of('roomName'); // make namespace (something like ./hoge/fuga)
+
+   soc.join('roomName')  // join room
+   soc.leave('roomName') // leave
+
+   soc.id // identifier of client
+
+   io.emit() == io.sockets.emit() // all w/ self
+   io.to('roomName').emit()       // in room w/ self
+   io.to(socket.id).emit()        // one
+   soc.emit()                     // a client
+   soc.to("roomName").emit()      // in room w/o self
+   soc.broadcast.emit()           // all w/o self
 */
 io.on('connection', function(socket) {
-    io.emit('connectionEstablished', {}) // 通知
-    socket.on('disconnection', function(){})
+    socket.emit('connectionEstablished', {});
+    socket.on('disconnection', function(){});
 
     // for test
-    socket.on('phaseShiftTest', co.PhaseShift(io, vil));
+    socket.on('phaseShiftTest', co.PhaseShift(io,socket, vil));
     socket.on('ackTest1', function(){
         console.log("acktest1")
         // use in client side will logs server side
         socket.emit('ackTest2', function(data){ console.log(data); })
-    })
+    });
 
+    // maybe arg socket is innecessary
     // before game
-    socket.on('joinRoom',   bg.JoinRoom(io, vil, socket));
-    socket.on('exitRoom',   bg.ExitRoom(io, vil));
-    socket.on('changeRule', bg.ChangeRule(io, vil));
-    socket.on('startGame',  bg.StartGame(io, vil));
+    socket.on('joinRoom',   bg.JoinRoom(io,socket, vil));
+    socket.on('exitRoom',   bg.ExitRoom(io,socket, vil));
+    socket.on('changeRule', bg.ChangeRule(io,socket, vil));
+    socket.on('startGame',  bg.StartGame(io,socket, vil));
 
     // morning
     // socket.on('morningResultChecked', mr.MorningResultChecked(io, vil))
 
     // daytime
     // afternoon
-    socket.on('vote', af.Vote(io,vil))
+    socket.on('vote', af.Vote(io,socket, vil))
 
     // evening
     // night
-    socket.on('chat', ni.Chat(io,vil))
-    socket.on('action', ni.Action(io,vil))
+    socket.on('chat', ni.Chat(io,socket, vil))
+    socket.on('action', ni.Action(io,socket, vil))
 
     // common
-    socket.on('readyToShift', co.ReadyToShift(io,vil))
+    socket.on('readyToShift', co.ReadyToShift(io,socket, vil))
 });
 
 console.log('Server running!');

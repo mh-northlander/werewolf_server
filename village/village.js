@@ -54,29 +54,17 @@ Village.prototype = {
             return acc && (!this.users[key].alive || this.users[key].readyToShift);
         }, true);
     },
-    shiftPhase: function(io, nPhase){
+    shiftPhase: function(nPhase){
         // shift
         console.log("shift:" + this.phase.gamePhase + " to " + nPhase);
         this.phase.phaseShift(nPhase, this.rule.dayTime, this.rule.nightTime);
-        io.emit("phaseChange", {
-            phase: this.phase.gamePhase,
-            dayCount:   this.phase.dayCount,
-            timeCount:  this.phase.secCount,
-        });
-        io.emit("phaseShiftTest", { name: this.phase.gamePhase}); // for debug
-
-        // timer
-        if(this.phase.secCount > 0){
-            console.log("start count" + this.phase.secCount);
-            setTimeout(() => {
-                this.shiftPhase(io, this.phase.nextPhase());
-            }, this.phase.secCount*1000);
-        }
 
         // reset flg
         Object.keys(this.users).forEach((key)=>{
             this.users[key].readyToShift = false;
         });
+
+        return this.phase
     },
 
 

@@ -8,24 +8,32 @@ module.exports = {
 // model = require('./../model');
 
 // readyToShift
-function readyToShift(io,village) {
+function readyToShift(io, socket, village) {
     return function(data){
 
     };
 };
 
 // for debug >>>>
-function phaseShift(io, village){
+function phaseShift(io, socket, village){
     return function(){
-        console.log("shift..");
-        village.phase.phaseShift(village.phase.nextPhase());
-        io.emit('phaseShiftTest', {name : village.phase.gamePhase});
+        phase = village.shiftPhase(village.phase.nextPhase());
+        io.sockets.emit("phaseChange", {
+            phase:     phase.gamePhase,
+            dayCount:  phase.dayCount,
+            timeCount: phase.secCount,
+        });
 
         if(village.phase.secCount > 0){
-            console.log("start count" + village.phase.secCount);
+            console.log("start count: " + phase.secCount);
             setTimeout(() => {
-                phaseShift(io, village)();
-            }, village.phase.secCount*1000);
+                nPhase = village.shiftPhase(phase.nextPhase());
+                io.sockets.emit("phaseChange", {
+                    phase:     nPhase.gamePhase,
+                    dayCount:  nPhase.dayCount,
+                    timeCount: nPhase.secCount,
+                });
+            }, phase.secCount*1000);
         }
     }
 };

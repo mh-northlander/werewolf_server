@@ -10,7 +10,7 @@ model = require('./../model');
 
 
 // morningResultChecked
-function morningResultChecked(io, village){
+function morningResultChecked(io, socket, village){
     return function(userId){
         village.users[userId].actionDone = True;
         village.finishPhase(io)

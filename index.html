@@ -35,6 +35,9 @@
       var userId = randomString(8)
       var socket = io.connect();
 
+      socket.on("connectionEstablished", function(){
+        appendMsg("connect!");
+      });
       socket.on("memberChanged", function(data){
         appendMsg(data.value)
       });
