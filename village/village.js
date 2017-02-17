@@ -12,8 +12,12 @@ function Village(villageId){
     village.Id = villageId;
     village.masterId = null;
     village.users = {};
-    village.rule = {};
+    village.rule = {
+        dayTime : 5,
+        nightTime : 5,
+    };
     village.phase = model.Phase();
+    village.log = {};
 
     return village;
 }
@@ -34,17 +38,47 @@ Village.prototype = {
             if(this.masterId == null){
                 this.masterId = userId;
             }
-        } else { // user already exists. TODO: maybe done in 'reconnect' func
-            this.users[userId].socketId = socketId
         }
+        // else { // user already exists. TODO: maybe done in 'reconnect' func
+        //     this.users[userId].socketId = socketId
+        // }
     },
     removeUser: function(userId){
-        if(userId == this.masterId){
-            this.closeVillage();
-        } else {
-            delete this.users[userId];
-        }
+        delete this.users[userId];
     },
+
+    // phase
+    isAbleToShift: function(){
+        // everyone ready except deads
+        Object.keys(this.users).reduce(function(acc, key){
+            return acc && (!this.users[key].alive || this.users[key].readyToShift);
+        }, true);
+    },
+    shiftPhase: function(io, nPhase){
+        // shift
+        console.log("shift:" + this.phase.gamePhase + " to " + nPhase);
+        this.phase.phaseShift(nPhase, this.rule.dayTime, this.rule.nightTime);
+        io.emit("phaseChange", {
+            phase: this.phase.gamePhase,
+            dayCount:   this.phase.dayCount,
+            timeCount:  this.phase.secCount,
+        });
+        io.emit("phaseShiftTest", { name: this.phase.gamePhase}); // for debug
+
+        // timer
+        if(this.phase.secCount > 0){
+            console.log("start count" + this.phase.secCount);
+            setTimeout(() => {
+                this.shiftPhase(io, this.phase.nextPhase());
+            }, this.phase.secCount*1000);
+        }
+
+        // reset flg
+        Object.keys(this.users).forEach((key)=>{
+            this.users[key].readyToShift = false;
+        });
+    },
+
 
     // info
     masterUser: function(){

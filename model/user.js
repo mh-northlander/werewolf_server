@@ -13,7 +13,9 @@ function User(userId, userName, socketId){
     user.socketId = socketId;
     user.id = userId;
     user.name = userName;
+
     user.alive = true;
+    user.readyToShift = false;
 
     user.role = role.Role(); // null role
     user.log = {};

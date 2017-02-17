@@ -35,8 +35,11 @@
       var userId = randomString(8)
       var socket = io.connect();
 
-      socket.on("joinRoom", function(data){
+      socket.on("memberChanged", function(data){
         appendMsg(data.value)
+      });
+      socket.on("phaseChange", function(data){
+        appendMsg(data.phase + " of day " + data.dayCount + ", sec:" + data.timeCount);
       });
       socket.on("startGame", function(data){
         appendMsg("あなたは" + data.value + "です。");

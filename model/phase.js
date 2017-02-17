@@ -9,13 +9,14 @@ const DefaultNightTime = 7; // sec
 
 const GamePhase = {
     BEFORE    : "before",     // setting
-    FNIGHT    : "firstNight",
-    MORNING   : "morning",
-    AFTERNOON : "afternoon",  // talk
-    EVENING   : "evening",    // vote
+    MORNING   : "morning",    // action result
+    DAYTIME   : "daytime",    // talk
+    AFTERNOON : "afternoon",  // vote
+    EVENING   : "evening",    // vote result
     NIGHT     : "night",      // action
     AFTER     : "after",      // game end
 };
+Phase.GamePhase = GamePhase
 
 // Phase
 function Phase(){
@@ -33,12 +34,15 @@ Phase.prototype = {
     nextPhase : function(){
         switch(this.gamePhase){
         case GamePhase.BEFORE:
-            return GamePhase.FNIGHT;
+            return GamePhase.NIGHT;
             break;
-        case GamePhase.FNIGHT:
+        case GamePhase.NIGHT:
             return GamePhase.MORNING;
             break;
         case GamePhase.MORNING:
+            return GamePhase.DAYTIME;
+            break;
+        case GamePhase.DAYTIME:
             return GamePhase.AFTERNOON;
             break;
         case GamePhase.AFTERNOON:
@@ -46,9 +50,6 @@ Phase.prototype = {
             break;
         case GamePhase.EVENING:
             return GamePhase.NIGHT;
-            break;
-        case GamePhase.NIGHT:
-            return GamePhase.MORNING;
             break;
         default:
         }
@@ -64,10 +65,10 @@ Phase.prototype = {
         }
 
         // set sec count
-        if(nextP == GamePhase.NIGHT){
-            this.secCount = dayTime ? dayTime : DefaultNightTime;
+        if(nextP == GamePhase.NIGHT || nextP == GamePhase.FNIGHT){
+            this.secCount = nightTime ? nightTime : DefaultNightTime;
         } else if (nextP == GamePhase.AFTERNOON){
-            this.secCount = nightTime ? nightTime : DefaultDayTime;
+            this.secCount = dayTime ? dayTime : DefaultDayTime;
         } else {
             this.secCount = -1;
         }

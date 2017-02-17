@@ -4,50 +4,33 @@ module.exports = {
     ExitRoom: exitRoom,
     ChangeRule:changeRule,
     StartGame: startGame,
-
-    PhaseShift: phaseShift,
-}
+};
 
 // imports
+model = require('../model/');
 
-// for debug >>>>
-function phaseShift(io, village){
-    return function(){
-        console.log("shift..");
-        village.phase.phaseShift(village.phase.nextPhase());
-        io.emit('phaseShiftTest', {name : village.phase.gamePhase});
-
-        if(village.phase.secCount > 0){
-            console.log("start count" + village.phase.secCount);
-            setTimeout(() => {
-                phaseShift(io, village)();
-            }, village.phase.secCount*1000);
-        }
-    }
-}
-// <<<< for debug
 
 // join room
 function joinRoom(io, village, socket){
     return function(data){
         village.addUser(data.userId, data.name, socket.id);
-        io.emit('joinRoom', {value : village.getUserNameList()});
+        io.emit('memberChanged', {value : village.getUserNameList()});
     }
-}
+};
 
 // exit room
 function exitRoom(io, village){
     return function(data){
-        io.emit('exitRoom', {value : "fuga"});
+        village.removeUser(data.userId);
     }
-}
+};
 
 // change rule
 function changeRule(io, village){
     return function(data){
-        io.emit('changeRule', {value : "piyo"});
+        io.broadcast.emit('ruleChanged', village.Rule);
     }
-}
+};
 
 // start game
 function startGame(io, village){
@@ -58,12 +41,6 @@ function startGame(io, village){
             io.to(userSocketId).emit('startGame', {value : userRole});
         }
 
-        // phaseShift(next, dayTime, nightTime)
-        console.log(village.phase.nextPhase());
-        village.phase.phaseShift(village.phase.nextPhase());
-        io.emit('phaseShiftTest', {name : village.phase.gamePhase});
+        village.shiftPhase(io, model.Phase.GamePhase.NIGHT)
     }
-}
-
-// userInfoMap
-var userInfoMap = {};
+};
