@@ -15,8 +15,8 @@ function joinRoom(io, socket, village){
     return function(data){
         village.addUser(data.userId, socket.id, data.name);
         io.sockets.emit("memberChanged",
-                        village.users.reduce((ret, val)=>{
-                            ret.push(val.name);
+                        Object.keys(village.users).reduce((ret,key)=>{
+                            ret.push(village.users[key].name);
                             return ret
                         }, []));
     }
@@ -27,8 +27,8 @@ function exitRoom(io, socket, village){
     return function(data){
         village.removeUser(data.userId);
         io.sockets.emit("memberChanged",
-                        village.users.reduce((ret, val)=>{
-                            ret.push(val.name);
+                        Object.keys(village.users).reduce((ret,key)=>{
+                            ret.push(village.users[key].name);
                             return ret
                         }, []));
     }

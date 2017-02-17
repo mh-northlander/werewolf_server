@@ -24,7 +24,7 @@ function Village(villageId){
 
 Village.prototype = {
     //
-    closeVillage: function(){
+    closeVillage: ()=>{
         // this func resets itself,
         // since currently we use one global vil.
         this.masterId = null;
@@ -46,20 +46,20 @@ Village.prototype = {
         this.users[userId].name = name;
         this.users[userId].socketId = socketId;
     },
-    removeUser: function(userId){
+    removeUser: (userId)=>{
         delete this.users[userId];
     },
 
     // phase
     isAbleToShift: function(){
         // everyone ready except deads
-        Object.keys(this.users).reduce(function(acc, key){
+        Object.keys(this.users).reduce((acc, key)=>{
             return acc && (!this.users[key].alive || this.users[key].readyToShift);
         }, true);
     },
     shiftPhase: function(nPhase){
         // shift
-        console.log("shift:" + this.phase.gamePhase + " to " + nPhase);
+        console.log("shift: " + this.phase.gamePhase + " to " + nPhase);
         this.phase.phaseShift(nPhase, this.rule.dayTime, this.rule.nightTime);
 
         // reset flg
@@ -71,14 +71,24 @@ Village.prototype = {
     },
 
     // action
-    listActionCandidates(userId){
+    listActionCandidates: function(userId){
         /* object condition
            alive : bool
            notWolf: bool
            except: [userId]
          */
-        cond = this.users[userId].candidateCondition();
-        return this.users.reduce((ret,val)=>{
+        cond = this.users[userId].role.candidateCondition();
+        return Object.keys(this.users).reduce((ret,userId)=>{
+            user = this.users[userId];
+
+            if(cond.alive && !user.alive){ return ret; }
+            if(cond.notWolf && user.isWolf){ return ret; }
+            if(cond.except ? (userId in cond.except) : false){ return ret; }
+
+            ret.push({
+                userId: userId,
+                userName: user.name,
+            });
             return ret;
         }, []);
     },
@@ -93,7 +103,7 @@ Village.prototype = {
     },
 };
 
-Village.isVillage = function(obj,type){
+Village.isVillage = (obj,type)=>{
     if(!Village.prototype.isPrototypeOf(obj)){
         return false;
     }
