@@ -2,7 +2,7 @@
 module.exports = Seer;
 
 // imports
-consts = require('./constants');
+common = require('./common');
 Role = require('./role');
 
 
@@ -17,9 +17,12 @@ function Seer(){
 }
 
 Seer.prototype = {
-    team       : consts.team.Human,
-    fromSeer   : consts.fromSeer.Human,
-    fromMedium : consts.fromSeer.Human,
+    team   : common.HUMAN,
+    isWolf : false,
+
+    fromSeer   : common.HUMAN,
+    fromMedium : common.HUMAN,
+
     candidateCondition: ()=>{
         return {
             alive: true,

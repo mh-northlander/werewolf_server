@@ -2,7 +2,7 @@
 module.exports = Werewolf;
 
 // imports
-consts = require('./constants');
+common = require('./common');
 Role = require('./role');
 
 
@@ -17,9 +17,12 @@ function Werewolf(){
 }
 
 Werewolf.prototype = {
-    team       : consts.team.Werewolf,
-    fromSeer   : consts.fromSeer.Werewolf,
-    fromMedium : consts.fromSeer.Werewolf,
+    team   : common.WEREWOLF,
+    isWolf : true,
+
+    fromSeer   : common.WEREWOLF,
+    fromMedium : common.WEREWOLF,
+
     candidateCondition: ()=>{
         return {
             alive: true,

@@ -2,7 +2,7 @@
 module.exports = Role;
 
 // imports
-consts = require('./constants');
+common = require('./common');
 
 
 // Role
@@ -11,15 +11,19 @@ function Role(type = "none"){
 
     role.type = type;
 
+    role.chatLog = [];
     role.actionLog = [];
 
     return role;
 }
 
 Role.prototype = {
-    team       : consts.team.None,
-    fromSeer   : consts.fromSeer.None,
-    fromMedium : consts.fromSeer.None,
+    team   : common.NONE,
+    isWolf : false,
+
+    fromSeer   : common.NONE,
+    fromMedium : common.NONE,
+
     candidateCondition: ()=>{ return {}; },
 
     Chat : function(message){

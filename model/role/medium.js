@@ -2,7 +2,7 @@
 module.exports = Medium;
 
 // imports
-consts = require('./constants');
+common = require('./common');
 Role = require('./role');
 
 
@@ -17,9 +17,11 @@ function Medium(){
 }
 
 Medium.prototype = {
-    team       : consts.team.Human,
-    fromSeer   : consts.fromSeer.Human,
-    fromMedium : consts.fromSeer.Human,
+    team   : common.HUMAN,
+    isWolf : false,
+
+    fromSeer   : common.HUMAN,
+    fromMedium : common.HUMAN,
 }
 
 // isMedium
