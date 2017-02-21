@@ -5,7 +5,6 @@ module.exports = {
 };
 
 // imports
-// model = require('./../model');
 
 // readyToShift
 function readyToShift(io, socket, village) {

@@ -2,7 +2,9 @@
 module.exports = Village;
 
 // imports
-model = require('../model/');
+Phase = require('./phase');
+User  = require('./user');
+Log   = require('./log');
 
 
 // Village
@@ -16,8 +18,8 @@ function Village(villageId){
         dayTime : 5,
         nightTime : 5,
     };
-    village.phase = model.Phase();
-    village.log = [model.Log()];
+    village.phase = Phase();
+    village.log = [Log()];
 
     return village;
 }
@@ -34,7 +36,7 @@ Village.prototype = {
     // user
     addUser: function(userId, socketId, name){
         if(!(userId in this.users)){
-            this.users[userId] = new model.User(userId, name, socketId);
+            this.users[userId] = User(userId, name, socketId);
             if(this.masterId == null){
                 this.masterId = userId;
             }

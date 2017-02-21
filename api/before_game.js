@@ -7,7 +7,6 @@ module.exports = {
 };
 
 // imports
-model = require('../model/');
 night = require("./night")
 
 // join room

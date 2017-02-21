@@ -2,7 +2,7 @@
 module.exports = User;
 
 // imports
-role = require('./role')
+role = require('../role/')
 
 
 // User

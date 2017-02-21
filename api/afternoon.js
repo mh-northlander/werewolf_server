@@ -5,7 +5,7 @@ module.exports = {
 };
 
 // imports
-// model = require('./../model');
+GamePhaseAfternoon = require('../village/phase').GamePhase.AFTERNOON;
 evening = require('./evening');
 
 
@@ -20,7 +20,7 @@ module.exports.Vote = function(io,village){
 // begin
 function begin(io, socket, village){
     // shift phase
-    phase = village.shiftPhase(model.Phase.GamePhase.AFTERNOON);
+    phase = village.shiftPhase(GamePhaseAfternoon);
     io.sockets.emit("phaseChange", {
         phase:     phase.gamePhase,
         dayCount:  phase.dayCount,
