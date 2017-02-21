@@ -2,48 +2,54 @@ module.exports = {
     Action: action,
     Chat: chat,
 
-    NightProcess: nightProcess,
+    Begin: begin,
+    End  : end,
 };
 
 // import
 model = require('./../model');
+morning = require("./morning");
 
 //// listen
 // action
 function action(io, socket, village){
     return function(act){
-
+        village.log.action[village.getUserIdFromSocketId(socket.id)] = act;
     };
 };
 
 // chat
 function chat(io, socket, village){
     return function(message){
-
+        // TODO
     };
 };
 
 
 //// emit
-// night
-function nightProcess(io, socket, village){
-    actionCandidates(io, socket, village);
+// begin
+function begin(io, socket, village){
+    // shift
+    phase = village.shiftPhase(model.Phase.GamePhase.NIGHT)
+    io.sockets.emit("phaseChange", {
+        phase:     phase.gamePhase,
+        dayCount:  phase.dayCount,
+        timeCount: phase.secCount,
+    });
+
+    // action candidates
+    for(var userId in village.users){
+        socket.emit("antionCandidates", village.listActionCandidates(userId));
+    }
 
     // timer
     console.log("start count: " + phase.secCount);
     setTimeout(() => {
-        nPhase = village.shiftPhase(model.Phase.GamePhase.MORNING);
-        io.sockets.emit("phaseChange", {
-            phase:     nPhase.gamePhase,
-            dayCount:  nPhase.dayCount,
-            timeCount: nPhase.secCount,
-        });
+        end(io, socket, village);
     }, phase.secCount*1000);
 };
 
-// action candidate
-function actionCandidates(io, socket, village){
-    for(var userId in village.users){
-        io.emit("antionCandidates", village.listActionCandidates(userId));
-    }
+// end
+function end(io, socket, village){
+    morning.Begin(io, socket, village);
 };

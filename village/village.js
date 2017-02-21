@@ -17,7 +17,7 @@ function Village(villageId){
         nightTime : 5,
     };
     village.phase = model.Phase();
-    village.log = {};
+    village.log = [model.Log()];
 
     return village;
 }
@@ -46,8 +46,15 @@ Village.prototype = {
         this.users[userId].name = name;
         this.users[userId].socketId = socketId;
     },
-    removeUser: (userId)=>{
+    removeUser: function(userId){
         delete this.users[userId];
+    },
+    getUserIdFromSocketId: function(socketId){
+        for(key in Object.keys(this.users)){
+            if(this.users[key].socketId == socketId){
+                return key
+            }
+        }
     },
 
     // phase

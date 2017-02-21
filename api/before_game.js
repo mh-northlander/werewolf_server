@@ -54,15 +54,7 @@ function startGame(io, socket, village){
 
         // set chat room : TODO
 
-        // shift to first night
-        phase = village.shiftPhase(model.Phase.GamePhase.NIGHT)
-        io.sockets.emit("phaseChange", {
-            phase:     phase.gamePhase,
-            dayCount:  phase.dayCount,
-            timeCount: phase.secCount,
-        });
-
-        // inform
-        night.NightProcess(io, socket, village);
+        // next phase
+        night.Begin(io, socket, village);
     }
 };

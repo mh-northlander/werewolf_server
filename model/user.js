@@ -19,7 +19,6 @@ function User(userId, userName, socketId){
 
     user.role = role.Role(); // null role
     user.chatRoom = userId;
-    user.log = {};
 
     return user;
 }
