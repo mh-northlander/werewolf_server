@@ -43,11 +43,6 @@ io.on('connection', function(socket) {
 
     // for test
     socket.on('phaseShiftTest', co.PhaseShift(io,socket, vil));
-    socket.on('ackTest1', function(){
-        console.log("acktest1")
-        // use in client side will logs server side
-        socket.emit('ackTest2', function(data){ console.log(data); })
-    });
 
     // maybe arg socket is innecessary
     // before game
@@ -73,6 +68,7 @@ io.on('connection', function(socket) {
 });
 
 console.log('Server running!');
+
 
 
 // GET "/"

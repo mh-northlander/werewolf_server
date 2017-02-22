@@ -5,12 +5,41 @@ module.exports = {
 };
 
 // imports
+GamePhase = require("../village/phase").GamePhase;
+morning = require("./morning");
+daytime = require("./daytime");
+afternoon = require("./afternoon");
+evening = require("./evening");
+
 
 // readyToShift
 function readyToShift(io, socket, village) {
-    return function(data){
+    return function(){
+        userId = village.socketIdToUserId(socket.id)
+        village.users[userId].readyToShift = true;
 
-    };
+        console.log(village.users[userId].name + " is ready");
+
+        if(village.readyToShift()){
+            switch(village.phase.gamePhase){
+            case GamePhase.MORNING:
+                morning.End(io, socket, village);
+                break;
+            case GamePhase.DAYTIME:
+                daytime.End(io, socket, village);
+                break;
+            case GamePhase.AFTERNOON:
+                afternoon.End(io, socket, village);
+                break;
+            case GamePhase.EVENING:
+                evening.End(io, socket, village);
+                break;
+            default:
+                console.log("error: readyToShift");
+                break;
+            }
+        }
+    }
 };
 
 // for debug >>>>

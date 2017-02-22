@@ -1,7 +1,5 @@
 // export
 module.exports = {
-    MorningResultChecked: morningResultChecked,
-
     Begin: begin,
     End  : end,
 };
@@ -11,19 +9,9 @@ GamePhaseMorning = require('../village/phase').GamePhase.MORNING;
 dayTime = require("./daytime");
 
 
-//// listen
-// morningResultChecked
-function morningResultChecked(io, socket, village){
-    return function(userId){
-        village.users[userId].actionDone = True;
-        village.finishPhase(io)
-    }
-};
-
-
-//// emit
 // begin
 function begin(io, socket, village){
+    console.log("morning b");
     // shift phase
     phase = village.shiftPhase(GamePhaseMorning);
     io.sockets.emit("phaseChange", {
@@ -33,10 +21,12 @@ function begin(io, socket, village){
     });
 
     // morning result
-
+    result = village.evalAction();
+    io.sockets.emit("actionResult", result);
 };
 
 // end
 function end(io, socket, village){
+    console.log("morning e");
     dayTime.Begin(io, socket, village);
 };

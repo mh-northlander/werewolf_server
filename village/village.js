@@ -18,14 +18,16 @@ function Village(villageId){
         dayTime : 5,
         nightTime : 5,
     };
+
     village.phase = Phase();
+    village.actionStack = [];
     village.log = [Log()];
 
     return village;
 }
 
 Village.prototype = {
-    //
+    // village
     closeVillage: function(){
         // this func resets itself,
         // since currently we use one global vil.
@@ -34,6 +36,9 @@ Village.prototype = {
     },
 
     // user
+    masterUser: function(){
+        return this.masterId ? null : this.users[masterId];
+    },
     addUser: function(userId, socketId, name){
         if(!(userId in this.users)){
             this.users[userId] = User(userId, name, socketId);
@@ -51,20 +56,25 @@ Village.prototype = {
     removeUser: function(userId){
         delete this.users[userId];
     },
-    getUserIdFromSocketId: function(socketId){
-        for(key in Object.keys(this.users)){
+    socketIdToUserId: function(socketId){
+        for(key in this.users){
             if(this.users[key].socketId == socketId){
-                return key
+                return key;
             }
         }
     },
 
+    // rule
+
     // phase
-    isAbleToShift: function(){
+    readyToShift: function(){
         // everyone ready except deads
-        Object.keys(this.users).reduce((acc, key)=>{
-            return acc && (!this.users[key].alive || this.users[key].readyToShift);
-        }, true);
+        for(key in this.users){
+            if(this.users[key].alive && !this.users[key].readyToShift){
+                return false;
+            }
+        }
+        return true;
     },
     shiftPhase: function(nPhase){
         // shift
@@ -101,14 +111,23 @@ Village.prototype = {
             return ret;
         }, []);
     },
+    addAction: function(subjectUserId, act){
+        // act: {type, userId (target), ~}
 
+        // resp: {subjectUser, objectUser, result:role.common, }
+        return {};
+    },
+    evalAction: function(){
+        // resp: {deads:[userName], }
+        return {};
+    },
 
-    // info
-    masterUser: function(){
-        if(!this.users == {}){
-            return this.users[this.masterId];
-        }
-        // return {};
+    // vote
+    addVote: function(subjectUserId, vote){
+
+    },
+    evalVote: function(){
+        return {};
     },
 };
 

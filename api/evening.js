@@ -14,6 +14,7 @@ night = require('./night');
 //// emit
 // begin
 function begin(io, socket, village){
+    console.log("evening b");
     // shift phase
     phase = village.shiftPhase(GamePhaseEvening);
     io.sockets.emit("phaseChange", {
@@ -22,11 +23,13 @@ function begin(io, socket, village){
         timeCount: phase.secCount,
     });
 
-    //
-
+    // evening result
+    result = village.evalVote();
+    io.sockets.emit("voteResult", result);
 };
 
 // end
 function end(io, socket, village){
+    console.log("evening e");
     night.Begin(io, socket, village);
 };

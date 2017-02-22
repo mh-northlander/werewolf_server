@@ -23,7 +23,8 @@
       <form class="form-inline">
         <button type="button" class="btn btn-primary" id="gameStart">gameStart</button>
         <button type="button" class="btn btn-primary" id="phaseShift">phaseShift</button>
-        <button type="button" class="btn btn-primary" id="ackTest">ack test</button>
+        <button type="button" class="btn btn-primary" id="ready">readyToShift</button>
+        <button type="button" class="btn btn-primary" id="vote">vote</button>
       </form>
       <div id="chatLogs"></div>
     </div>
@@ -70,14 +71,12 @@
       $("#phaseShift").click(function(e){
         socket.emit("phaseShiftTest");
       });
-      $("#ackTest").click(function(e){
-        socket.emit("ackTest1");
+      $("#ready").click(function(e){
+        socket.emit("readyToShift");
       });
-      socket.on("ackTest2", function(fn){
-        appendMsg("acktest")
-        fn("yatta!");
-      })
-
+      $("#vote").click(function(e){
+        socket.emit("vote", {});
+      });
     </script>
   </body>
 </html>

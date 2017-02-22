@@ -1,8 +1,9 @@
 // exports
 module.exports = {
-    JoinRoom: joinRoom,
-    ExitRoom: exitRoom,
+    JoinRoom:  joinRoom,
+    ExitRoom:  exitRoom,
     ChangeRule:changeRule,
+
     StartGame: startGame,
 };
 
@@ -13,6 +14,8 @@ night = require("./night")
 function joinRoom(io, socket, village){
     return function(data){
         village.addUser(data.userId, socket.id, data.name);
+
+        // user name list
         io.sockets.emit("memberChanged",
                         Object.keys(village.users).reduce((ret,key)=>{
                             ret.push(village.users[key].name);
@@ -25,6 +28,8 @@ function joinRoom(io, socket, village){
 function exitRoom(io, socket, village){
     return function(data){
         village.removeUser(data.userId);
+
+        // user name list
         io.sockets.emit("memberChanged",
                         Object.keys(village.users).reduce((ret,key)=>{
                             ret.push(village.users[key].name);

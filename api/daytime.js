@@ -9,12 +9,9 @@ GamePhaseDaytime = require('../village/phase').GamePhase.DAYTIME;
 afternoon = require("./afternoon");
 
 
-//// listen
-
-
-//// emit
 // begin
 function begin(io, socket, village){
+    console.log("daytime b");
     // shift phase
     phase = village.shiftPhase(GamePhaseDaytime);
     io.sockets.emit("phaseChange", {
@@ -23,11 +20,15 @@ function begin(io, socket, village){
         timeCount: phase.secCount,
     });
 
-    //
-
+    // timer
+    console.log("start count: " + phase.secCount);
+    setTimeout(() => {
+        end(io, socket, village);
+    }, phase.secCount*1000);
 };
 
 // end
 function end(io, socket, village){
+    console.log("daytime e");
     afternoon.Begin(io, socket, village);
 };

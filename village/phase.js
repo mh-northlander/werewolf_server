@@ -55,22 +55,26 @@ Phase.prototype = {
         }
     },
 
-    phaseShift : function(nextP, dayTime, nightTime){
+    phaseShift : function(nextPhase, dayTime, nightTime){
         // phase shift
-        this.gamePhase = nextP;
+        this.gamePhase = nextPhase;
 
         // day count
-        if(nextP == GamePhase.MORNING){
+        if(nextPhase == GamePhase.MORNING){
             this.dayCount += 1;
         }
 
         // set sec count
-        if(nextP == GamePhase.NIGHT || nextP == GamePhase.FNIGHT){
+        switch(nextPhase){
+        case GamePhase.NIGHT:
             this.secCount = nightTime ? nightTime : DefaultNightTime;
-        } else if (nextP == GamePhase.AFTERNOON){
+            break;
+        case GamePhase.DAYTIME:
             this.secCount = dayTime ? dayTime : DefaultDayTime;
-        } else {
+            break;
+        default:
             this.secCount = -1;
+            break;
         }
     },
 };
