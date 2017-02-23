@@ -24,7 +24,6 @@ function vote(io, socket, village){
     };
 };
 
-//// emit
 // begin
 function begin(io, socket, village){
     console.log("afternoon b");

@@ -35,7 +35,7 @@ function readyToShift(io, socket, village) {
                 evening.End(io, socket, village);
                 break;
             default:
-                console.log("error: readyToShift");
+                console.log("error: readyToShift with phase " + village.phase.gamePhase);
                 break;
             }
         }
