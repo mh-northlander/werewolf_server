@@ -4,6 +4,7 @@ module.exports = Village;
 // imports
 Phase = require('./phase');
 User  = require('./user');
+Rule  = require('./rule');
 Log   = require('./log');
 
 
@@ -14,10 +15,7 @@ function Village(villageId){
     village.Id = villageId;
     village.masterId = null;
     village.users = {};
-    village.rule = {
-        dayTime : 5,
-        nightTime : 5,
-    };
+    village.rule = Rule();
 
     village.phase = Phase();
     village.actionStack = [];
@@ -65,6 +63,9 @@ Village.prototype = {
     },
 
     // rule
+    updateRule: function(dayTime, dayTimeDecreasesBy, nightTime, firstNightSee, roleLackable){
+        this.rule.update(dayTime, dayTimeDecreasesBy, nightTime, firstNightSee, roleLackable);
+    },
 
     // phase
     readyToShift: function(){
