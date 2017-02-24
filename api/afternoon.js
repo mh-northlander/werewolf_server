@@ -35,7 +35,10 @@ function begin(io, socket, village){
         timeCount: phase.secCount,
     });
 
-    //
+    // vote candidate
+    candidates = village.voteCandidates()
+    console.log(candidates)
+    io.sockets.emit("voteCandidates", candidates);
 };
 
 // end

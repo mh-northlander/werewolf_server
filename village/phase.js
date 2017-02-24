@@ -22,7 +22,7 @@ Phase.GamePhase = GamePhase
 function Phase(){
     var phase = Object.create(Phase.prototype);
 
-    phase.gamePhase = GamePhase.BEFORE;
+    phase.gamePhase = GamePhase.BEFOREGAME;
 
     phase.dayCount = 0;
     phase.secCount = -1; // existing time of current phase (night and afternoon)

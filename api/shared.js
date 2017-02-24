@@ -23,7 +23,7 @@ function readyToShift(io, socket, village) {
         if(village.readyToShift()){
             switch(village.phase.gamePhase){
             case GamePhase.BEFOREGAME:
-                before_game.End(io, socket, village);
+                before_game.StartGame(io, socket, village)();
                 break;
             case GamePhase.MORNING:
                 morning.End(io, socket, village);

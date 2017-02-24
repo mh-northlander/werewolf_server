@@ -40,11 +40,11 @@ Village.prototype = {
         return this.masterId ? null : this.users[masterId];
     },
     addUser: function(userId, socketId, name){
-        if(!(userId in this.users)){
-            this.users[userId] = User(userId, name, socketId);
-            if(this.masterId == null){
-                this.masterId = userId;
-            }
+        if(userId in this.users){ return; }
+
+        this.users[userId] = User(userId, name, socketId);
+        if(this.masterId == null){
+            this.masterId = userId;
         }
     },
     updateUser: function(userId, socketId, name){
@@ -100,9 +100,9 @@ Village.prototype = {
         return Object.keys(this.users).reduce((ret,userId)=>{
             user = this.users[userId];
 
-            if(cond.alive && !user.alive){ return ret; }
-            if(cond.notWolf && user.isWolf){ return ret; }
-            if(cond.except ? (userId in cond.except) : false){ return ret; }
+            if(cond.alive   && !user.alive){ return ret; }
+            if(cond.notWolf &&  user.isWolf){ return ret; }
+            if(cond.except  && (userId in cond.except)){ return ret; }
 
             ret.push({
                 userId: userId,
@@ -123,6 +123,17 @@ Village.prototype = {
     },
 
     // vote
+    voteCandidates: function(){
+        return Object.keys(this.users).reduce((ret,userId)=>{
+            if(this.users[userId].alive){
+                ret.push({
+                    userId: userId,
+                    userName: this.users[userId].name,
+                });
+            }
+            return ret;
+        }, []);
+    },
     addVote: function(subjectUserId, vote){
 
     },

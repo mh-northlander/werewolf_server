@@ -55,7 +55,7 @@
         socket.emit("exitRoom");
       });
       socket.on("memberChanged", function(list){
-        appendMsg(list)
+        appendMsg(list);
       });
       $("#gameStart").click(function(e){
         socket.emit("startGame");
@@ -70,6 +70,12 @@
       $("#ready").click(function(e){
         socket.emit("readyToShift");
       });
+
+      socket.on("voteCandidates", function(list){
+        for(v in list){
+          appendMsg(v.userName);
+        }
+      })
       $("#vote").click(function(e){
         socket.emit("vote", {});
       });

@@ -49,7 +49,7 @@ function changeRule(io, socket, village){
 
 // start game
 function startGame(io, socket, village){
-    return function(data){
+    return function(){
         // set role : TODO
         for(var userId in village.users){
             var userSocketId = village.users[userId].socketId;
