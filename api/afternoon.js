@@ -8,7 +8,7 @@ module.exports = {
 
 // imports
 GamePhaseAfternoon = require('../village/phase').GamePhase.AFTERNOON;
-common = require('./common');
+shared = require('./shared');
 evening = require('./evening');
 
 
@@ -20,7 +20,7 @@ function vote(io, socket, village){
         village.addVote(userId, vote);
 
         // check
-        common.ReadyToShift(io,socket,village)();
+        shared.ReadyToShift(io,socket,village)();
     };
 };
 
