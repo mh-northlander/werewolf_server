@@ -37,12 +37,9 @@ module.exports.mountAPIs = function(io){
     io.on("connection", function(socket){
         socket.on('disconnection', function(){});
 
-        // shared
+        // common
         socket.emit('connectionEstablished', {});
         socket.on('readyToShift', shared.ReadyToShift(io,socket, vil))
-
-        // for test
-        socket.on('phaseShiftTest', shared.PhaseShift(io,socket, vil));
 
         // before game
         socket.on('joinRoom',   before_game.JoinRoom(io,socket, vil));

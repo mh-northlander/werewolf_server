@@ -26,8 +26,9 @@ function joinRoom(io, socket, village){
 
 // exit room
 function exitRoom(io, socket, village){
-    return function(data){
-        village.removeUser(data.userId);
+    return function(){
+        userId = village.socketIdToUserId(socket.id)
+        village.removeUser(userId);
 
         // user name list
         io.sockets.emit("memberChanged",

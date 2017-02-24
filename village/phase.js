@@ -8,13 +8,13 @@ const DefaultDayTime = 7;   // sec
 const DefaultNightTime = 7; // sec
 
 const GamePhase = {
-    BEFORE    : "before",     // setting
-    NIGHT     : "night",      // action
-    MORNING   : "morning",    // action result
-    DAYTIME   : "daytime",    // talk
-    AFTERNOON : "afternoon",  // vote
-    EVENING   : "evening",    // vote result
-    AFTER     : "after",      // game end
+    BEFOREGAME : "before_game", // setting
+    NIGHT      : "night",       // action
+    MORNING    : "morning",     // action result
+    DAYTIME    : "daytime",     // talk
+    AFTERNOON  : "afternoon",   // vote
+    EVENING    : "evening",     // vote result
+    AFTERGAME  : "after_game",  // game end
 };
 Phase.GamePhase = GamePhase
 

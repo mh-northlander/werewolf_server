@@ -18,11 +18,11 @@
           <label for="msgForm"> message: </label>
           <input type="text" class="form-control" id="msgForm">
         </div>
-        <button type="submit" class="btn btn-primary">join room</button>
+        <button type="submit" class="btn btn-primary" id="join">join room</button>
+        <button type="button" class="btn btn-primary" id="exit">exit room</button>
+        <button type="button" class="btn btn-primary" id="gameStart">gameStart</button>
       </form>
       <form class="form-inline">
-        <button type="button" class="btn btn-primary" id="gameStart">gameStart</button>
-        <button type="button" class="btn btn-primary" id="phaseShift">phaseShift</button>
         <button type="button" class="btn btn-primary" id="ready">readyToShift</button>
         <button type="button" class="btn btn-primary" id="vote">vote</button>
       </form>
@@ -30,6 +30,10 @@
     </div>
 
     <script type="text/javascript">
+      function appendMsg(text) {
+        $("#chatLogs").append("<div>" + text + "</div>");
+      }
+
       function randomString(length) {
         return Math.round((Math.pow(36, length + 1) - Math.random() * Math.pow(36, length))).toString(36).slice(1);
       };
@@ -39,37 +43,29 @@
       socket.on("connectionEstablished", function(){
         appendMsg("connect!");
       });
+      $("form").submit(function(e){
+        var message = $("#msgForm").val();
+        $("#msgForm").val("");
+        if(message != ""){
+          socket.emit("joinRoom", {userId : userId, name: message});
+          e.preventDefault();
+        }
+      });
+      $("#exit").click(function(e){
+        socket.emit("exitRoom");
+      });
       socket.on("memberChanged", function(list){
         appendMsg(list)
       });
-      socket.on("phaseChange", function(data){
-        appendMsg(data.phase + " of day " + data.dayCount + ", sec:" + data.timeCount);
-      });
-      socket.on("roleAck", function(roleName){
-        appendMsg("あなたは" + roleName + "です。");
-      });
-
-      function appendMsg(text) {
-        $("#chatLogs").append("<div>" + text + "</div>");
-      }
-
-      $("form").submit(function(e){
-        var message = $("#msgForm").val();
-        $("#msgForm").val('');
-        socket.emit("joinRoom", {userId : userId, name: message});
-        e.preventDefault();
-      });
-
       $("#gameStart").click(function(e){
         socket.emit("startGame");
       });
 
-      // test
-      socket.on("phaseShiftTest", function(data){
-        appendMsg("phase:" + data.name);
-      })
-      $("#phaseShift").click(function(e){
-        socket.emit("phaseShiftTest");
+      socket.on("phaseChange", function(data){
+        appendMsg(data.phase + " of day " + data.dayCount + ", sec:" + data.timeCount);
+      });
+      socket.on("roleAck", function(roleName){
+        appendMsg("role: " + roleName);
       });
       $("#ready").click(function(e){
         socket.emit("readyToShift");
@@ -77,6 +73,7 @@
       $("#vote").click(function(e){
         socket.emit("vote", {});
       });
+
     </script>
   </body>
 </html>
