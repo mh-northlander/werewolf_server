@@ -5,8 +5,7 @@ exports.type = {
     NONE     : "none",
 };
 
-exports.chat = {
-    personal : "personal",
-
-    wolf     : "wolf",
+exports.chatType = {
+    PERSONAL : "personal",
+    GROUP    : "group",
 };

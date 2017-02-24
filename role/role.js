@@ -19,7 +19,9 @@ function Role(type = "none"){
 Role.prototype = {
     team     : common.type.NONE,
     isWolf   : false,
-    chatRoom : common.chat.personal,
+
+    chatType  : common.chatType.PERSONAL,
+    chatGroup : "none";
 
     fromSeer   : common.type.NONE,
     fromMedium : common.type.NONE,
