@@ -36,9 +36,10 @@ function begin(io, socket, village){
     });
 
     // vote candidate
-    candidates = village.voteCandidates()
-    console.log(candidates)
-    io.sockets.emit("voteCandidates", candidates);
+    for(userId in Object.keys(village.users)){
+        candidates = village.voteCandidates(userId);
+        io.to(village.users[userId].socketId).emit("voteCandidates", candidates);
+    }
 };
 
 // end

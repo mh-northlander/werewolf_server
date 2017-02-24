@@ -92,25 +92,10 @@ Village.prototype = {
 
     // action
     listActionCandidates: function(userId){
-        /* object condition
-           alive : bool
-           notWolf: bool
-           except: [userId]
-         */
         cond = this.users[userId].role.candidateCondition();
-        return Object.keys(this.users).reduce((ret,userId)=>{
-            user = this.users[userId];
+        cond.except.push(userId);
 
-            if(cond.alive   && !user.alive){ return ret; }
-            if(cond.notWolf &&  user.isWolf){ return ret; }
-            if(cond.except  && (userId in cond.except)){ return ret; }
-
-            ret.push({
-                userId: userId,
-                userName: user.name,
-            });
-            return ret;
-        }, []);
+        return this.listMembersWithCondition(cond)
     },
     addAction: function(subjectUserId, act){
         // act: {type, userId (target), ~}
@@ -124,22 +109,41 @@ Village.prototype = {
     },
 
     // vote
-    voteCandidates: function(){
-        return Object.keys(this.users).reduce((ret,userId)=>{
-            if(this.users[userId].alive){
-                ret.push({
-                    userId: userId,
-                    userName: this.users[userId].name,
-                });
-            }
-            return ret;
-        }, []);
+    voteCandidates: function(subjectUserId){
+        return this.listMembersWithCondition({
+            alive  : true,
+            except : [subjectUserId],
+        })
     },
     addVote: function(subjectUserId, vote){
 
     },
     evalVote: function(){
         return {};
+    },
+
+    // util
+    listMembersWithCondition: function(cond){
+        /* condition
+           alive  : bool
+           except : [userId]
+
+           notWolf : bool
+        */
+        return Object.keys(this.users).reduce((ret,userId)=>{
+            user = this.users[userId];
+
+            if(cond.alive  && !user.alive){ return ret; }
+            if(cond.except && (userId in cond.except)){ return ret; }
+
+            if(cond.notWold && user.role.isWolf){ return ret; }
+
+            ret.push({
+                userName: user.name,
+                userId:   userId,
+            });
+            return ret;
+        }, []);
     },
 };
 
