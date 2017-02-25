@@ -36,9 +36,9 @@ function begin(io, socket, village){
     });
 
     // vote candidate
-    for(userId in Object.keys(village.users)){
+    for(userId of Object.keys(village.users)){
         candidates = village.voteCandidates(userId);
-        io.to(village.users[userId].socketId).emit("voteCandidates", candidates);
+        io.to(village.userIdToSocketId(userId)).emit("voteCandidates", candidates);
     }
 };
 

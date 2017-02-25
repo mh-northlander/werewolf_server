@@ -61,6 +61,9 @@ Village.prototype = {
             }
         }
     },
+    userIdToSocketId: function(userId){
+        return this.users[userId].socketId;
+    },
 
     // rule
     updateRule: function(dayTime, dayTimeDecreasesBy, nightTime, firstNightSee, roleLackable){
