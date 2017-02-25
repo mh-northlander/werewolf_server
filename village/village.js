@@ -93,7 +93,11 @@ Village.prototype = {
     // action
     listActionCandidates: function(userId){
         cond = this.users[userId].role.candidateCondition();
-        cond.except.push(userId);
+        if(cond.except){
+            cond.except.push(userId);
+        } else {
+            cond.except = [userId];
+        }
 
         return this.listMembersWithCondition(cond)
     },
