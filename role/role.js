@@ -21,7 +21,7 @@ Role.prototype = {
     isWolf   : false,
 
     chatType  : common.chatType.PERSONAL,
-    chatGroup : "none";
+    chatGroup : "none",
 
     fromSeer   : common.type.NONE,
     fromMedium : common.type.NONE,

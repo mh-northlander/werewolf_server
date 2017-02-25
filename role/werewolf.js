@@ -20,8 +20,8 @@ Werewolf.prototype = {
     team     : common.type.WEREWOLF,
     isWolf   : true,
 
-    chatType  : common.chat.GROUP,
-    chatGroup : "werewolf";
+    chatType  : common.chatType.GROUP,
+    chatGroup : "werewolf",
 
     fromSeer   : common.type.WEREWOLF,
     fromMedium : common.type.WEREWOLF,
