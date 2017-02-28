@@ -24,7 +24,8 @@ Medium.prototype = {
     fromMedium : common.type.HUMAN,
 
     actionResult: function(village){
-        if(village.phase.dayCount <= 0){ return {}; }
+        // first night
+        if(village.phase.dayCount == 0){ return {}; }
 
         return {}; // TODO: vote log
 

@@ -24,6 +24,23 @@ Seer.prototype = {
     fromMedium : common.type.HUMAN,
 
     actionCandidates: function(village, selfId){
+        // first night
+        if(village.phase.dayCount == 0){
+            switch(village.rule.firstNightSee){
+            case Seer.firstNightSee.None:   return [];
+            case Seer.firstNightSee.Given:  return village.listMembersWithCondition({
+                alive   : true,
+                exFunc  : userRole => {
+                    return (role.fromSeer == common.type.HUMAN) &&
+                        (role.Fox.isFox(userRole));
+                },
+            });
+            case Seer.firstNightSee.Choice: break;
+            default:
+                console.log("error: seer firstNight");
+            }
+        }
+
         return village.listMembersWithCondition({
             alive  : true,
             except : this.log.reduce((ret,val)=>{
@@ -51,6 +68,13 @@ Seer.prototype = {
         }
     }
 }
+
+//
+Seer.firstNightSee = {
+    None   : "firstNightSee_none",
+    Choice : "firstNightSee_choice",
+    Given  : "firstNightSee_given",
+};
 
 // isSeer
 Seer.isSeer = function(obj){
