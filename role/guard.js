@@ -34,7 +34,7 @@ Guard.prototype = {
             exp.push(this.log[this.log.length-1].userId)
         }
 
-        return village.listMembersWithCondition({
+        return village.listUserIdsWithCondition({
             alive  : true,
             except : exp,
         })

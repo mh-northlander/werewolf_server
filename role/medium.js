@@ -30,7 +30,7 @@ Medium.prototype = {
         return {}; // TODO: vote log
 
         objectId  = village.log[village.phase.dayCount].execution.executedId;
-        mediumRes = village.users[objectId].role.fromMedium;
+        mediumRes = village.users.get(objectId).role.fromMedium;
         return {
             objectId : objectId,
             result   : mediumRes==common.type.WEREWOLF ? mediumRes : common.type.HUMAN,

@@ -28,7 +28,7 @@ Seer.prototype = {
         if(village.phase.dayCount == 0){
             switch(village.rule.firstNightSee){
             case Seer.firstNightSee.None:   return [];
-            case Seer.firstNightSee.Given:  return village.listMembersWithCondition({
+            case Seer.firstNightSee.Given:  return village.listUserIdsWithCondition({
                 alive   : true,
                 exFunc  : userRole => {
                     return (role.fromSeer == common.type.HUMAN) &&
@@ -41,7 +41,7 @@ Seer.prototype = {
             }
         }
 
-        return village.listMembersWithCondition({
+        return village.listUserIdsWithCondition({
             alive  : true,
             except : this.log.reduce((ret,val)=>{
                 ret.push(val.userId);
@@ -61,7 +61,7 @@ Seer.prototype = {
             objectId  : act.userId,
         });
 
-        seerRes = village.users[act.userId].role.fromSeer;
+        seerRes = village.users.get(act.userId).role.fromSeer;
         return {
             objectId : act.userId,
             result   : seerRes==common.type.WEREWOLF ? seerRes : commontype.HUMAN,

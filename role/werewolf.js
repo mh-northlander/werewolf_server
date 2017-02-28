@@ -30,11 +30,11 @@ Werewolf.prototype = {
         // first night
         if(village.phase.dayCount == 0){ return []; }
 
-        return village.listMembersWithCondition({
+        return village.listUserIdsWithCondition({
             alive  : true,
             except : [selfId],
             exFunc : userRole => {
-                return (userRole.species != common.type.WEREWOLF);
+                return (userRole.chatGroup == this.chatGroup);
             },
         })
     },
