@@ -20,8 +20,8 @@ function Village(villageId){
 
     village.phase = Phase();
     village.log = [Log()];
-    village.voteStack = {};
 
+    village.voteMap = new Map();
     village.actionStack = {};
 
     return village;
@@ -65,9 +65,9 @@ Village.prototype = {
 
     // phase
     readyToShift: function(){
-        // everyone ready except deads
-        for(key in this.users){
-            if(this.users[key].alive && !this.users[key].readyToShift){
+        for(userId in this.users){
+            // alive but not ready
+            if(this.users[userId].alive && !this.users[userId].readyToShift){
                 return false;
             }
         }
@@ -79,15 +79,15 @@ Village.prototype = {
         this.phase.phaseShift(nPhase, this.rule.dayTime, this.rule.nightTime);
 
         // reset flg
-        Object.keys(this.users).forEach((key)=>{
-            this.users[key].readyToShift = false;
-        });
+        for(userId in this.users){
+            this.users[userId].readyToShift = false;
+        }
 
         return this.phase
     },
 
     // action
-    getCandidatesMap: function(){ // => [userId]
+    getCandidatesMap: function(){ // => map{ userId: [userId] }
         Object.keys(this.users).reduce((ret,userId)=>{
             if(this.users[userId].alive && this.users[userId].role.actionCandidates){
                 list = this.users[userId].role.actionCandidates(this, userId);
@@ -98,7 +98,7 @@ Village.prototype = {
             return ret;
         }, {})
     },
-    getResultMap: function(){ // => { userId, result, }
+    getResultMap: function(){ // => map{ userId: { userId, result,} }
         Object.keys(this.users).reduce((ret,userId)=>{
             if(this.users[userId].alive && this.users[userId].role.actionResult){
                 res = this.users[userId].role.actionResult(this);
@@ -109,7 +109,7 @@ Village.prototype = {
             return ret;
         }, {})
     },
-    evalActionMorning: function(){ // => [userId]
+    evalActionMorning: function(){ // => {deadIds: [userId], }
         if(this.phase.dayCount == 1){ return { deadIds:[] }; }
 
         deadIds = [];
@@ -158,7 +158,9 @@ Village.prototype = {
                 subjectIds[Math.floor(Math.random() * subjectIds.length)], objectId));
         }
 
-        //
+        // reset
+        this.actionStack = {};
+
         return {
             deadIds: deadIds,
         };
@@ -186,33 +188,45 @@ Village.prototype = {
             except : [subjectUserId],
         })
     },
-    addVote: function(subjectUserId, vote){ // => _
+    addVote: function(subjectId, vote){ // => _
+        // voteStack: Map(objectId: {subjectIds, count})
         // vote: [userId]
         for(userId of vote){
-            if(!this.voteStack[userId]){
-                this.voteStack[userId] = 0;
-            }
-            this.voteStack[userId] += 1;
+            if(!this.voteMap.has(userId)){ this.voteMap.set(userId, {
+                subjectIds : [],
+                count      : 0,
+            }); }
+
+            this.voteMap.get(userId).count += 1;
+            this.voteMap.get(userId).subjectIds.push(subjectId);
         }
     },
-    evalVote: function(){ // => {executedId:userId, deadIds:[userId]}
-        maxVotes = 0;
-        executedIds = [];
-        for(userId in this.voteStack){
-            if       (this.voteStack[userId] >  maxVotes){
-                executedIds = [userId];
-                maxVotes = this.voteStack[userId];
-            } else if(this.voteStack[userId] == maxVotes){
-                executedIds.push(userId);
-            }
-        }
+    evalVote: function(){ // => { executedId:userId, deadIds:[userId] }
+        this.voteMap.forEach((v,k,m)=>{ // uniquerify
+            v.subjectIds = v.subjectIds.filter((e,i,a)=>{
+                return a.indexOf(e) == i;
+            });
+        });
 
-        executedId = executedIds[Math.floor(Math.random() * executedIds.length)];
-        deads      = this.event_executed(executedId);
-        idx        = deads.indexOf(executedId);
-        deads      = deads.splice(idx, 1);
+        maxVotes = 0;
+        eIds = [];
+        this.voteMap.forEach((v,k,m)=>{
+            if       (v.count >  maxVotes){
+                eIds = [k];
+                maxVotes = v.count;
+            } else if(v.count == maxVotes){
+                eIds.push(k);
+            }
+        });
+
+        eId   = eIds[Math.floor(Math.random() * eIds.length)];
+        deads = this.event_executed(eId);
+        idx   = deads.indexOf(eId);
+        deads = deads.splice(idx, 1);
+
+        this.voteMap.clear(); // reset
         return {
-            executedId   : executedId,
+            executedId   : eId,
             deadIds      : deads,
         };
     },
@@ -223,15 +237,14 @@ Village.prototype = {
            alive  : bool
            except : [userId]
 
-           notWolf : bool
+           exFunc  : user => bool // take if true
         */
         return Object.keys(this.users).reduce((ret,userId)=>{
             user = this.users[userId];
 
             if(cond.alive  && !user.alive){ return ret; }
             if(cond.except && cond.except.indexOf(userId) >= 0 ){ return ret; }
-
-            if(cond.notWold && user.role.species==role.common.type.WEREWOLF){ return ret; }
+            if(cond.exFunc && !cond.exFunc(user.role)){ return ret; }
 
             ret.push(userId);
             return ret;
