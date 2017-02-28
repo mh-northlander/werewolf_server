@@ -22,7 +22,7 @@ function Village(villageId){
     village.log = [Log()];
 
     village.voteMap = new Map();
-    village.actionStack = {};
+    village.actionMap = new Map();
 
     return village;
 }
@@ -114,52 +114,52 @@ Village.prototype = {
 
         deadIds = [];
         // see
-        if(this.actionStack["see"]){
-            for(e of this.actionStack["see"]){
-                deadIds = deadIds.concat(this.event_saw(e.subjectUserId, e.objectUserId));
+        if(this.actionMap.has("see")){
+            for(act of this.actionMap.get("see")){
+                deadIds = deadIds.concat(this.event_saw(act.subjectId, act.objectId));
             }
         }
 
         //// bite
-        if(this.actionStack["bite"]){
+        if(this.actionMap.has("bite")){
             // summarize all bite action
-            summary = {} // objectId -> { powerSum, subjectIds, subjectPower }
-            for(e of this.actionStack["bite"]){
-                if(summary[e.objectId]){ // init
-                    summary[e.objectId] = {
+            let summary = new Map();
+            for(act of this.actionMap.get("bite")){
+                if(summary.has(act.objectId)){ // init
+                    summary.set(act.objectId, {
                         powerSum     : 0,
                         subjectPower : 0,
                         subjectIds   : [],
-                    };
+                    });
                 }
-                summary[e.objectId].powerSum += e.power
-                if       (e.power >  summary[e.objectId].subjectPower){
-                    summary[e.objectId].subjectIds   = [e.subjectId];
-                    summary[e.objectId].subjectPower = e.power;
-                } else if(e.power == summary[e.objectId].subjectPower){
-                    summary[e.objectId].subjectIds.push(e.subjectId);
+                summary.get(act.objectId).powerSum += act.power
+                if       (act.power >  summary.get(act.objectId).subjectPower){
+                    summary.get(act.objectId).subjectIds   = [act.subjectId];
+                    summary.get(act.objectId).subjectPower = act.power;
+                } else if(act.power == summary.get(act.objectId).subjectPower){
+                    summary.get(act.objectId).subjectIds.push(act.subjectId);
                 }
             }
-            // search victim
+            // pick victim
             objectIds = [];
             maxPower = 0;
-            for(objectId in summary){
-                if       (summary[objectId].powerSum >  maxPower){
-                    objectIds = [objectId];
-                    maxPower  = summary[objectId].powerSum;
-                } else if(summary[objectId].powerSum == maxPower){
-                    objectIds.push(objectId);
+            summary.forEach((v,k,m)=>{
+                if       (v.powerSum >  maxPower){
+                    objectIds = [k];
+                    maxPower  = v.powerSum;
+                } else if(v.powerSum >  maxPower){
+                    objectIds.push(k);
                 }
-            }
+            });
             // random choice if tie
-            objectId   = objectIds[Math.floor(Math.random() * objectIds.length)];
-            subjectIds = summary[objectId];
-            deadIds = deadIds.concat(this.event_bited(
-                subjectIds[Math.floor(Math.random() * subjectIds.length)], objectId));
+            objectId   = objectIds [Math.floor(Math.random() * objectIds.length)];
+            subjectIds = summary.get(objectId).subjectIds;
+            subjectId  = subjectIds[Math.floor(Math.random() * subjectIds.length)];
+            deadIds = deadIds.concat(this.event_bited(subjectId, objectId));
         }
 
         // reset
-        this.actionStack = {};
+        this.actionMap.clear();
 
         return {
             deadIds: deadIds,
@@ -202,7 +202,8 @@ Village.prototype = {
         }
     },
     evalVote: function(){ // => { executedId:userId, deadIds:[userId] }
-        this.voteMap.forEach((v,k,m)=>{ // uniquerify
+        // uniquerify
+        this.voteMap.forEach((v,k,m)=>{
             v.subjectIds = v.subjectIds.filter((e,i,a)=>{
                 return a.indexOf(e) == i;
             });

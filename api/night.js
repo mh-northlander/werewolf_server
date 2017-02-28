@@ -46,9 +46,6 @@ function begin(io, village){
         timeCount: phase.secCount,
     });
 
-    // reset
-    village.actionStack = {};
-
     // action candidates
     candidatesMap = village.getCandidatesMap()
     for(userId in candidatesMap){

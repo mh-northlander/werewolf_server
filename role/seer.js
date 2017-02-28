@@ -55,8 +55,8 @@ Seer.prototype = {
         // log
         this.log.push({ userId: act.userId });
 
-        if(!village.actionStack["see"]){ village.actionStack["see"] = []; }
-        village.actionStack["see"].push({
+        if(!village.actionMap.has("see")){ village.actionMap.set("see", []); }
+        village.actionMap.get("see").push({
             subjectId : userId,
             objectId  : act.userId,
         });

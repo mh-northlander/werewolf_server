@@ -44,8 +44,8 @@ Werewolf.prototype = {
         // first night
         if(village.phase.dayCount == 0){ return {}; }
 
-        if(!village.actionStack["bite"]){ village.actionStack["bite"] = []; }
-        village.actionStack["bite"].push({
+        if(!village.actionMap.has("bite")){ village.actionMap.set("bite", []); }
+        village.actionMap.get("bite").push({
             subjectId : userId,
             objectId  : act.userId,
             power     : act.power,
