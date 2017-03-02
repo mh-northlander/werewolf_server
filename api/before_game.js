@@ -9,6 +9,7 @@ module.exports = {
 
 // imports
 night = require("./night")
+role = require("../role")
 
 // join room
 function joinRoom(io, socket, village){
@@ -43,11 +44,17 @@ function changeRule(io, socket, village){
 function startGame(io, village){
     return function(){
         // set role : TODO
-        for(var [id,user] of village.users){
+        for(var [userId,user] of village.users){
             io.to(user.socketId).emit("toleAck", user.role.type);
-        }
 
-        // set chat room : TODO
+            if(userRole.chatType == role.common.chatType.PERSONAL){
+                io.sockets.sockets[user.socketId].join(userId);
+                io.to(userId).emit("debug", userId + "はぼっち村の人です");
+            } else if(user.role.chatType == role.common.chatType.GROUP){
+                io.sockets.sockets[user.socketId].join(user.role.chatGroup);
+                io.to(user.role.chatGroup).emit("debug", "あなたは" + user.role.type + "です");
+            }
+        }
 
         // next phase
         night.Begin(io, village);
