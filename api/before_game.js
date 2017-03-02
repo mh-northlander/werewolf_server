@@ -1,15 +1,18 @@
 // exports
 module.exports = {
-    JoinRoom:  joinRoom,
-    ExitRoom:  exitRoom,
-    ChangeRule:changeRule,
+    JoinRoom : joinRoom,
+    ExitRoom : exitRoom,
 
-    StartGame: startGame,
+    ChangeRule    : changeRule,
+    ChangeRoleSet : changeRoleSet,
+
+    StartGame : startGame,
 };
 
 // imports
-night = require("./night")
+rule = require("../village/rule");
 role = require("../role")
+night = require("./night")
 
 // join room
 function joinRoom(io, socket, village){
@@ -35,8 +38,15 @@ function exitRoom(io, socket, village){
 // change rule
 function changeRule(io, socket, village){
     return function(rule){
-        village.changeRule(rule);
-        io.sockets.emit('ruleChanged', village.Rule);
+        village.updateRule(rule);
+        io.sockets.emit('ruleChanged', village.Rule.toJSON());
+    }
+};
+
+function changeRoleSet(io, socket, village){
+    return function(roleObj){
+        village.updateRoleSet(rule.JSONToRoleMap(roleObj));
+        io.sockets.emit("ruleChanged", village.Rule.toJSON());
     }
 };
 
