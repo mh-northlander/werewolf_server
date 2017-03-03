@@ -40,7 +40,7 @@ function begin(io, village){
     });
 
     // vote candidate
-    for(var [id,user] of village.users){
+    for(let [id,user] of village.users){
         candidates = village.voteCandidates(id);
         io.to(village.userIdToSocketId(id)).emit("voteCandidates", candidates);
     }

@@ -53,13 +53,13 @@ Guard.prototype = {
         return {};
     },
 
-    mountEvent: function(village){
+    mountEvents: function(village){
         oldBited = village.event.bited;
-        village.event.bited = function(subjectUserId, objectUserId, base=[]){
+        village.event.bited = function(subjectId, objectId, success, result={}){
             if(objectUserId == this.guardingId){
-                return base;
+                return oldBited(subjectId, objectId, false, result);
             }
-            return oldBited(subjectUserId, objectUserId, base=[]);
+            return oldBited(subjectId, objectId, success, result);
         };
     },
 }

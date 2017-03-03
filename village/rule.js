@@ -40,7 +40,7 @@ Rule.prototype = {
         if(q.roleLackable){ this.roleLackable = q.roleLackable; }
     },
     updateRoleSet: function(m){ // m: Map name -> num
-        for(var name of role.roleNameList){
+        for(const name of role.roleNameList){
             if(m.has(name)){
                 this.roleSet.set(name, m.get(name));
             }
@@ -50,14 +50,14 @@ Rule.prototype = {
     // role set
     roleSetJSON: function(){
         o = {};
-        for(var [name,n] of this.roleSet){
+        for(const [name,n] of this.roleSet){
             o[name] = n;
         }
         return o;
     },
     suffledRoleList: function(){
         a = [];
-        for(var [name,n] of this.roleSet){
+        for(const [name,n] of this.roleSet){
             for(var i=0; i<n; i++){
                 a.push(name);
             }
@@ -75,7 +75,7 @@ Rule.prototype = {
 
 Rule.JSONToRoleMap = function(obj){
     m = new Map();
-    for(var name of role.roleNameList){
+    for(const name of role.roleNameList){
         m.set(name, obj[name] ? obj[name] : 0)
     }
     return m;

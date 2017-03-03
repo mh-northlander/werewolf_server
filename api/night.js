@@ -48,14 +48,14 @@ function begin(io, village){
 
     // action candidates
     candidatesMap = village.getCandidatesMap()
-    for(userId in candidatesMap){
+    for(const userId in candidatesMap){
         io.to(village.userIdToSocketId(userId)).emit(
             "actionCandidates", candidatesMap[userId]);
     }
 
     // action result (for difinite action)
     resultMap = village.getResultMap()
-    for(userId in resultMap){
+    for(const userId in resultMap){
         io.to(village.userIdToSocketId(userId)).emit(
             "actionResult", resultMap[userId]);
     }

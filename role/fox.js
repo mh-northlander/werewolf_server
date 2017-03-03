@@ -22,23 +22,26 @@ Fox.prototype = {
     fromSeer   : common.type.HUMAN,
     fromMedium : common.type.HUMAN,
 
-    mountEvent: function(village){
-        // die when sew
+    mountEvents: function(village){
+        // die when saw
         oldSaw = village.event_saw;
-        village.event_saw = function(subjectId, objectId, base=[]){
+        village.event_saw = function(subjectId, objectId, result={}){
             if(Fox.isFox(village.users.get(objectId).role)){
-                base = village.event_died(objectId, base);
+                if(!result.deadIds){ result.deadIds = []; }
+                result.deadIds.push(objectId);
+
+                let res = village.event_died(objectId, result);
             }
-            return oldSaw(objectId, base);
+            return oldSaw(objectId, res);
         };
 
         // won't die when bited
         oldBited = village.event_bited;
-        village.event_bited = function(subjectId, objectId, base=[]){
+        village.event_bited = function(subjectId, objectId, success, result={}){
             if(Fox.isFox(village.users.get(objectId).role)){
-                return base;
+                return oldBited(subjectId, objectId, false, result);
             }
-            return oldBited(subjectId, objectId, base=[]);
+            return oldBited(subjectId, objectId, success, result);
         };
     },
 }

@@ -58,6 +58,8 @@ function startGame(io, village){
         idx = 0;
         for(let [userId,user] of village.users){
             user.role = role[roleList[idx]]();
+            user.role.mountEvents(village);
+
             io.to(user.socketId).emit("roleAck", user.role.type);
 
             idx++;
@@ -67,15 +69,12 @@ function startGame(io, village){
         for(let [userId,user] of village.users){
             if(user.role.chatType == role.common.chatType.PERSONAL){
                 user.chatRoom = userId;
-                io.sockets.sockets[user.socketId].join(user.chatRoom);
-
-                io.to(user.chatRoom).emit("debug", userId + "はぼっち村の人です");
             } else if(user.role.chatType == role.common.chatType.GROUP){
                 user.chatRoom = user.role.chatGroup;
-                io.sockets.sockets[user.socketId].join(user.chatRoom);
-
-                io.to(user.chatRoom).emit("debug", "あなたは" + user.role.type + "です");
             }
+
+            io.sockets.sockets[user.socketId].join(user.chatRoom);
+            io.to(user.chatRoom).emit("debug", "あなたは" + user.role.type + "です");
         }
 
         // next phase

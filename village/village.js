@@ -68,7 +68,7 @@ Village.prototype = {
 
     // phase
     readyToShift: function(){
-        for(var [id, user] of this.users){
+        for(let [id, user] of this.users){
             // alive but not ready
             if(user.alive && !user.readyToShift){
                 return false;
@@ -82,7 +82,7 @@ Village.prototype = {
         this.phase.phaseShift(nPhase, this.rule.dayTime, this.rule.nightTime);
 
         // reset flg
-        for(var [k,v] of this.users){
+        for(let [k,v] of this.users){
             v.readyToShift = false;
         }
 
@@ -92,7 +92,7 @@ Village.prototype = {
     // action
     getCandidatesMap: function(){ // => map{ userId: [userId] }
         ret = {};
-        for(var [id,user] of this.users){
+        for(let [id,user] of this.users){
             if(user.alive && user.role.actionCandidates){
                 list = user.role.actionCandidates(this, id);
                 if(list != []){
@@ -104,7 +104,7 @@ Village.prototype = {
     },
     getResultMap: function(){ // => map{ userId: result{} }
         ret = {};
-        for(var [id,user] of this.users){
+        for(let [id,user] of this.users){
             if(user.alive && user.role.actionResult){
                 res = user.role.actionResult(this, id);
                 if(res != {}){
@@ -117,19 +117,19 @@ Village.prototype = {
     evalActionMorning: function(){ // => {deadIds: [userId], }
         if(this.phase.dayCount == 1){ return { deadIds:[] }; }
 
-        deadIds = [];
+        var morningResult = {}
         // see
         if(this.actionMap.has("see")){
-            for(act of this.actionMap.get("see")){
-                deadIds = deadIds.concat(this.event_saw(act.subjectId, act.objectId));
+            for(const act of this.actionMap.get("see")){
+                morningResult = this.event_saw(act.subjectId, act.objectId, morningResult);
             }
         }
 
-        //// bite
+        // bite
         if(this.actionMap.has("bite")){
             // summarize all bite action
             let summary = new Map();
-            for(act of this.actionMap.get("bite")){
+            for(const act of this.actionMap.get("bite")){
                 if(summary.has(act.objectId)){ // init
                     summary.set(act.objectId, {
                         powerSum     : 0,
@@ -148,7 +148,7 @@ Village.prototype = {
             // pick victim
             objectIds = [];
             maxPower = 0;
-            for(var [k,v] of summary){
+            for(const [k,v] of summary){
                 if       (v.powerSum >  maxPower){
                     objectIds = [k];
                     maxPower  = v.powerSum;
@@ -160,31 +160,37 @@ Village.prototype = {
             objectId   = objectIds [Math.floor(Math.random() * objectIds.length)];
             subjectIds = summary.get(objectId).subjectIds;
             subjectId  = subjectIds[Math.floor(Math.random() * subjectIds.length)];
-            deadIds = deadIds.concat(this.event_bited(subjectId, objectId));
+
+            morningResult = this.event_bited(subjectId, objectId, true, morningResult);
         }
 
         // reset
         this.actionMap.clear();
 
-        return {
-            deadIds: deadIds,
-        };
+        return morningResult;
     },
 
-    // event returns dead user list : _ => [userId]
-    event_saw: function(subjectId, objectId, base=[]){
-        return base;
+    // event returns result object (morning / vote)
+    // type: ~ => { deadIds, executedId, ~ }
+    event_saw: function(subjectId, objectId, result={}){ return result; },
+    event_bited: function(subjectId, objectId, success, result={}){
+        if(success){ // bite action can fail
+            if(!result.deadIds){ result.deadIds = []; }
+            result.deadIds.push(objectIds);
+
+            return this.event_died(objectId, result);
+        }
+        return result;
     },
-    event_bited: function(subjectId, objectId, base=[]){
-        return this.event_died(objectId, base);
+    event_executed: function(objectId, result={}){
+        result.executedId = objectIds;
+        return this.event_died(objectId, result);
     },
-    event_executed: function(objectId, base=[]){
-        return this.event_died(objectId, base);
+    event_died: function(objectId, result={}){
+        this.user.get(objectId).alive = false;
+        return result;
     },
-    event_died: function(objectId, base=[]){
-        this.users.get(objectId).alive = false;
-        return base.concat([objectId]);
-    },
+    event_morning: function(result={}){ return result; },
 
     // vote
     voteCandidates: function(subjectId){ // => [userId]
@@ -196,7 +202,7 @@ Village.prototype = {
     addVote: function(subjectId, vote){ // => _
         // voteStack: Map(objectId: {subjectIds, count})
         // vote: [userId]
-        for(userId of vote){
+        for(const userId of vote){
             if(!this.voteMap.has(userId)){ this.voteMap.set(userId, {
                 subjectIds : [],
                 count      : 0,
@@ -208,7 +214,7 @@ Village.prototype = {
     },
     evalVote: function(){ // => { executedId:userId, deadIds:[userId] }
         // uniquerify
-        for(var [k,v] of this.voteMap){
+        for(const [k,v] of this.voteMap){
             v.subjectIds = v.subjectIds.filter((e,i,a)=>{
                 return a.indexOf(e) == i;
             });
@@ -216,7 +222,7 @@ Village.prototype = {
 
         maxVotes = 0;
         eIds = [];
-        for(var [k,v] of this.voteMap){
+        for(const [k,v] of this.voteMap){
             if       (v.count >  maxVotes){
                 eIds = [k];
                 maxVotes = v.count;
@@ -225,16 +231,13 @@ Village.prototype = {
             }
         }
 
-        eId   = eIds[Math.floor(Math.random() * eIds.length)];
-        deads = this.event_executed(eId);
-        idx   = deads.indexOf(eId);
-        deads = deads.splice(idx, 1);
+        eId = eIds[Math.floor(Math.random() * eIds.length)];
+        voteResult = this.event_executed(eid, {});
 
-        this.voteMap.clear(); // reset
-        return {
-            executedId   : eId,
-            deadIds      : deads,
-        };
+        // reset
+        this.voteMap.clear();
+
+        return voteResult;
     },
 
     // util
@@ -246,7 +249,7 @@ Village.prototype = {
            exFunc  : user => bool // take if true
         */
         ret = [];
-        for(var [id,user] of this.users){
+        for(const [id,user] of this.users){
             if(cond.alive  && !user.alive){ continue; }
             if(cond.except && cond.except.indexOf(id)>=0){ continue; }
             if(cond.exFunc && !cond.exFunc(user.role)){ continue; }
@@ -257,7 +260,7 @@ Village.prototype = {
     },
     listUsers: function(){ // => [{id,name}]
         ret = [];
-        for(var [id,user] of this.users){
+        for(const [id,user] of this.users){
             ret.push({
                 id   : id,
                 name : user.name,
@@ -267,7 +270,7 @@ Village.prototype = {
     },
 
     socketIdToUserId: function(socketId){ // => userId
-        for(var [id,user] of this.users){
+        for(const [id,user] of this.users){
             if(user.socketId == socketId){ return id; }
         }
         console.log("error: no user has socketId " + socketId);

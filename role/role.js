@@ -48,8 +48,8 @@ Role.prototype = {
     // return {} to do nothing in the night (stacking still work)
     evalActionNight: (village, userId, act) => { return {}; },
 
-    // mountEvent mounts event functions
-    mountEvent: function(village){},
+    // mountEvents mounts event functions
+    mountEvents: function(village){},
 };
 
 /* memo
