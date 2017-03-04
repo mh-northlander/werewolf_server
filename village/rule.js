@@ -16,46 +16,35 @@ function Rule(){
     // time for discussion or action in the night (sec)
     rule.nightTime = 1;
 
-    // how Seer acts in the first night. (None / Given / Choice)
-    rule.firstNightSee = role.Seer.firstNightSee.Given;
     // the first victim (NPC) can have role
     rule.roleLackable = false;
+    // how Seer acts in the first night. (None / Given / Choice)
+    rule.firstNightSee = role.Seer.firstNightSee.Given;
 
-    // number of members. minimum 4
-    rule.member = 4;
     // set of role in this village. Map(name -> num)
-    rule.roleSet = role.defaultRoleSet(rule.member);
+    rule.roleSet = role.defaultRoleSet(4);
 
     return rule;
 };
 
 Rule.prototype = {
-    updateBase: function(q){
-        if(q.dayTime){ this.dayTime = q.dayTime; }
-        if(q.dayTimeDecreasesBy){ this.dayTimeDecreasesBy = q.dayTimeDecreasesBy; }
+    update: function(r){ // r: rule obj
+        if(r.dayTime){ this.dayTime = r.dayTime; }
+        if(r.dayTimeDecreasesBy){ this.dayTimeDecreasesBy = r.dayTimeDecreasesBy; }
+        if(r.nightTime){ this.nightTime = r.nightTime; }
 
-        if(q.nightTime){ this.nightTime = q.nightTime; }
+        if(r.roleLackable){ this.roleLackable = r.roleLackable; }
+        if(r.firstNightSee){ this.firstNightSee = r.firstNightSee; }
 
-        if(q.firstNightSee){ this.firstNightSee = q.firstNightSee; }
-        if(q.roleLackable){ this.roleLackable = q.roleLackable; }
-    },
-    updateRoleSet: function(m){ // m: Map name -> num
-        for(const name of role.roleNameList){
-            if(m.has(name)){
-                this.roleSet.set(name, m.get(name));
+        if(r.roleSet){
+            this.roleSet.clear();
+            for(const name of role.roleNameList){
+                this.roleSet.set(name, r.roleSet[name] ? r.roleSet[name] : 0);
             }
         }
     },
 
-    // role set
-    roleSetJSON: function(){
-        o = {};
-        for(const [name,n] of this.roleSet){
-            o[name] = n;
-        }
-        return o;
-    },
-    suffledRoleList: function(){
+    suffledRoleList: function(){ // Map(name => n) -> [name]
         a = [];
         for(const [name,n] of this.roleSet){
             for(var i=0; i<n; i++){
@@ -68,17 +57,14 @@ Rule.prototype = {
     // util
     toJSON: function(){
         ret = Object.assign({}, this);
-        ret.roleSet = this.roleSetJSON();
+
+        ret.roleSet = {};
+        for(const [name,n] of this.roleSet){
+            ret[name] = n;
+        }
+
         return ret;
     },
-};
-
-Rule.JSONToRoleMap = function(obj){
-    m = new Map();
-    for(const name of role.roleNameList){
-        m.set(name, obj[name] ? obj[name] : 0)
-    }
-    return m;
 };
 
 Rule.isRule = (obj,type)=>{

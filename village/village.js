@@ -37,6 +37,7 @@ Village.prototype = {
         this.actionMap.clear();
     },
 
+
     // user
     masterUser: function(){
         return this.masterId ? null : this.users.get(masterId);
@@ -59,11 +60,8 @@ Village.prototype = {
 
 
     // rule
-    updateBaseRule: function(obj){
-        this.rule.updateBase(obj);
-    },
-    updateRoleSet: function(map){
-        this.rule.updateRoleSet(map);
+    updateRule: function(obj){
+        this.rule.update(obj);
     },
 
     // phase

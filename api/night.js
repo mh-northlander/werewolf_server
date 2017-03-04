@@ -40,31 +40,27 @@ function begin(io, village){
     console.log("night b");
     // shift
     phase = village.shiftPhase(GamePhaseNight);
-    io.sockets.emit("phaseChange", {
+    io.sockets.emit("phaseChanged", {
         phase:     phase.gamePhase,
         dayCount:  phase.dayCount,
         timeCount: phase.secCount,
     });
 
     // action candidates
-    candidatesMap = village.getCandidatesMap()
+    candidatesMap = village.getCandidatesMap();
     for(const userId in candidatesMap){
-        io.to(village.userIdToSocketId(userId)).emit(
-            "actionCandidates", candidatesMap[userId]);
+        io.to(village.userIdToSocketId(userId)).emit("actionCandidates", candidatesMap[userId]);
     }
 
     // action result (for difinite action)
-    resultMap = village.getResultMap()
+    resultMap = village.getResultMap();
     for(const userId in resultMap){
-        io.to(village.userIdToSocketId(userId)).emit(
-            "actionResult", resultMap[userId]);
+        io.to(village.userIdToSocketId(userId)).emit("actionResult", resultMap[userId]);
     }
 
     // timer
     console.log("start count: " + phase.secCount);
-    setTimeout(() => {
-        end(io, village);
-    }, phase.secCount*1000);
+    setTimeout(() => { end(io, village); }, phase.secCount*1000);
 };
 
 // end

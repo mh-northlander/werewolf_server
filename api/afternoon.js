@@ -33,7 +33,7 @@ function begin(io, village){
     console.log("afternoon b");
     // shift phase
     phase = village.shiftPhase(GamePhaseAfternoon);
-    io.sockets.emit("phaseChange", {
+    io.sockets.emit("phaseChanged", {
         phase:     phase.gamePhase,
         dayCount:  phase.dayCount,
         timeCount: phase.secCount,
