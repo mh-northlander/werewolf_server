@@ -2,12 +2,12 @@
 module.exports = Rule;
 
 // imports
-util = require("../util");
-role = require("../role/");
+const util = require("../util");
+const role = require("../role/");
 
 // rule
 function Rule(){
-    var rule = Object.create(Rule.prototype);
+    const rule = Object.create(Rule.prototype);
 
     // time for discussion in the daytime (sec)
     rule.dayTime = 1;
@@ -29,11 +29,11 @@ function Rule(){
 
 Rule.prototype = {
     update: function(r){ // r: rule obj
-        if(r.dayTime){ this.dayTime = r.dayTime; }
+        if(r.dayTime)  { this.dayTime   = r.dayTime; }
         if(r.dayTimeDecreasesBy){ this.dayTimeDecreasesBy = r.dayTimeDecreasesBy; }
         if(r.nightTime){ this.nightTime = r.nightTime; }
 
-        if(r.roleLackable){ this.roleLackable = r.roleLackable; }
+        if(r.roleLackable) { this.roleLackable = r.roleLackable; }
         if(r.firstNightSee){ this.firstNightSee = r.firstNightSee; }
 
         if(r.roleSet){
@@ -45,9 +45,9 @@ Rule.prototype = {
     },
 
     suffledRoleList: function(){ // Map(name => n) -> [name]
-        a = [];
+        let a = [];
         for(const [name,n] of this.roleSet){
-            for(var i=0; i<n; i++){
+            for(let i=0; i<n; i++){
                 a.push(name);
             }
         }
@@ -56,7 +56,7 @@ Rule.prototype = {
 
     // util
     toJSON: function(){
-        ret = Object.assign({}, this);
+        let ret = Object.assign({}, this);
 
         ret.roleSet = {};
         for(const [name,n] of this.roleSet){

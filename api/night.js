@@ -7,19 +7,19 @@ module.exports = {
 };
 
 // import
-shared = require("./shared");
-morning = require("./morning");
-GamePhaseNight = require('../village/phase').GamePhase.NIGHT;
+const shared = require("./shared");
+const morning = require("./morning");
+const GamePhaseNight = require('../village/phase').GamePhase.NIGHT;
 
 //// listen
 // action
 function action(io, socket, village){
     return function(act){
-        userId = village.socketIdToUserId(socket.id);
-        user = village.users.get(userId);
+        const userId = village.socketIdToUserId(socket.id);
+        const user = village.users.get(userId);
 
-        resp = user.role.evalActionNight(village, userId, act);
-        if(resp && !resp=={}){
+        const resp = user.role.evalActionNight(village, userId, act);
+        if(resp && resp !== {}){
             io.to(village.users.get(userId).chatRoom).emit("actionResult", resp);
         }
     };
@@ -37,9 +37,9 @@ function chat(io, socket, village){
 //// emit
 // begin
 function begin(io, village){
-    console.log("night b");
+    console.log("night begin");
     // shift
-    phase = village.shiftPhase(GamePhaseNight);
+    const phase = village.shiftPhase(GamePhaseNight);
     io.sockets.emit("phaseChanged", {
         phase:     phase.gamePhase,
         dayCount:  phase.dayCount,
@@ -47,25 +47,27 @@ function begin(io, village){
     });
 
     // action candidates
-    candidatesMap = village.getCandidatesMap();
-    for(const userId in candidatesMap){
-        io.to(village.userIdToSocketId(userId)).emit("actionCandidates", candidatesMap[userId]);
+    const candidatesMap = village.getCandidatesMap();
+    console.log(candidatesMap);
+    for(const [id, list] of candidatesMap){
+        io.to(village.userIdToSocketId(id)).emit("actionCandidates", list);
     }
 
     // action result (for difinite action)
-    resultMap = village.getResultMap();
-    for(const userId in resultMap){
-        io.to(village.userIdToSocketId(userId)).emit("actionResult", resultMap[userId]);
+    const resultMap = village.getResultMap();
+    console.log(resultMap);
+    for(const [id, res] of resultMap){
+        io.to(village.userIdToSocketId(id)).emit("actionResult", res);
     }
 
     // timer
-    console.log("start count: " + phase.secCount);
+    console.log("start count: " + phase.secCount + " sec");
     setTimeout(() => { end(io, village); }, phase.secCount*1000);
 };
 
 // end
 function end(io, village){
-    console.log("night e");
+    console.log("night end");
     // TODO 未決定行動のランダム決定
     morning.Begin(io, village);
 };

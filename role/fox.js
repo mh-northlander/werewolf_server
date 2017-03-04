@@ -2,15 +2,15 @@
 module.exports = Fox;
 
 // imports
-common = require('./common');
-Role = require('./role');
+const common = require('./common');
+const Role = require('./role');
 
 
 // fox
 Fox.Name = "Fox";
 
 function Fox(){
-    var fox = Object.create(Fox.prototype);
+    const fox = Object.create(Fox.prototype);
     Object.assign(fox, Role(Fox.Name))
 
     return fox;
@@ -24,19 +24,19 @@ Fox.prototype = {
 
     mountEvents: function(village){
         // die when saw
-        oldSaw = village.event_saw;
+        const oldSaw = village.event_saw;
         village.event_saw = function(subjectId, objectId, result={}){
             if(Fox.isFox(village.users.get(objectId).role)){
                 if(!result.deadIds){ result.deadIds = []; }
                 result.deadIds.push(objectId);
 
-                let res = village.event_died(objectId, result);
+                result = village.event_died(objectId, result);
             }
-            return oldSaw(objectId, res);
+            return oldSaw(objectId, result);
         };
 
         // won't die when bited
-        oldBited = village.event_bited;
+        const oldBited = village.event_bited;
         village.event_bited = function(subjectId, objectId, success, result={}){
             if(Fox.isFox(village.users.get(objectId).role)){
                 return oldBited(subjectId, objectId, false, result);

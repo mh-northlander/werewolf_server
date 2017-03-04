@@ -7,13 +7,13 @@ module.exports.randomString = function(length){
 
 // suffleArray: suffle array randomly. destructive.
 module.exports.suffleArray = function(arr){
-    var crrIdx = arr.length;
-    var rndIdx, tmpValue;
+    let crrIdx = arr.length;
+    let rndIdx, tmpValue;
 
     while(crrIdx > 0){
         // take random one and put into last idx
         rndIdx = Math.floor(Math.random() * crrIdx);
-        crrIdx -=1;
+        crrIdx -= 1;
 
         tmpValue    = arr[crrIdx];
         arr[crrIdx] = arr[rndIdx];

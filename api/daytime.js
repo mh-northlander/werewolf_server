@@ -5,15 +5,15 @@ module.exports = {
 };
 
 // import
-GamePhaseDaytime = require('../village/phase').GamePhase.DAYTIME;
-afternoon = require("./afternoon");
+const GamePhaseDaytime = require('../village/phase').GamePhase.DAYTIME;
+const afternoon = require("./afternoon");
 
 
 // begin
 function begin(io, village){
-    console.log("daytime b");
+    console.log("daytime begin");
     // shift phase
-    phase = village.shiftPhase(GamePhaseDaytime);
+    const phase = village.shiftPhase(GamePhaseDaytime);
     io.sockets.emit("phaseChanged", {
         phase:     phase.gamePhase,
         dayCount:  phase.dayCount,
@@ -22,13 +22,11 @@ function begin(io, village){
 
     // timer
     console.log("start count: " + phase.secCount);
-    setTimeout(() => {
-        end(io, village);
-    }, phase.secCount*1000);
+    setTimeout(() => { end(io, village); }, phase.secCount*1000);
 };
 
 // end
 function end(io, village){
-    console.log("daytime e");
+    console.log("daytime end");
     afternoon.Begin(io, village);
 };

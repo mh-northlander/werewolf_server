@@ -2,15 +2,15 @@
 module.exports = Seer;
 
 // imports
-common = require('./common');
-Role = require('./role');
-
+const common = require('./common');
+const Role = require('./role');
+const fox = require("./fox");
 
 // seer
 Seer.Name = "Seer";
 
 function Seer(){
-    var seer = Object.create(Seer.prototype);
+    const seer = Object.create(Seer.prototype);
     Object.assign(seer, Role(Seer.Name))
 
     seer.log = [];
@@ -26,7 +26,7 @@ Seer.prototype = {
 
     actionCandidates: function(village, selfId){
         // first night
-        if(village.phase.dayCount == 0){
+        if(village.phase.dayCount === 0){
             switch(village.rule.firstNightSee){
             case Seer.firstNightSee.None:
             case Seer.firstNightSee.Given:  return [];
@@ -46,18 +46,18 @@ Seer.prototype = {
     },
 
     actionResult: function(village, selfId){
-        if(village.phase.dayCount != 0){ return {}; }
-        if(village.rule.firstNightSee != Seer.firstNightGiven){ return {}; }
+        if(village.phase.dayCount !== 0){ return {}; }
+        if(village.rule.firstNightSee !== Seer.firstNightGiven){ return {}; }
 
-        cIds = village.listUserIdsWithCondition({
-            alive   : true,
-            except  : [selfId],
-            exFunc  : userRole => {
-                return (role.fromSeer != common.type.WEREWOLF) &&
-                    (role.Fox.isFox(userRole));
+        const cIds = village.listUserIdsWithCondition({
+            alive  : true,
+            except : [selfId],
+            exceptFunc : user => {
+                return (user.role.fromSeer === common.type.WEREWOLF) &&
+                    (fox.isFox(user.role));
             },
         });
-        cId = cIds[Math.floor(Math.random() * cIds.length)];
+        const cId = cIds[Math.floor(Math.random() * cIds.length)];
 
         return evalActionNight(village, selfId, { type: "see", userId: cid });
     },
@@ -73,10 +73,10 @@ Seer.prototype = {
             objectId  : act.userId,
         });
 
-        seerRes = village.users.get(act.userId).role.fromSeer;
+        const fromSeer = village.users.get(act.userId).role.fromSeer;
         return {
             objectId : act.userId,
-            type     : seerRes==common.type.WEREWOLF ? seerRes : commontype.HUMAN,
+            type     : fromSeer===common.type.WEREWOLF ? fromSeer : commontype.HUMAN,
         }
     },
 }

@@ -2,15 +2,15 @@
 module.exports = Werewolf;
 
 // imports
-common = require('./common');
-Role = require('./role');
+const common = require('./common');
+const Role = require('./role');
 
 
 // werewolf
 Werewolf.Name = "Werewolf";
 
 function Werewolf(){
-    var wolf = Object.create(Werewolf.prototype);
+    const wolf = Object.create(Werewolf.prototype);
     Object.assign(wolf, Role(Werewolf.Name))
 
     return wolf;
@@ -27,13 +27,13 @@ Werewolf.prototype = {
 
     actionCandidates: function(village, selfId){
         // first night
-        if(village.phase.dayCount == 0){ return []; }
+        if(village.phase.dayCount === 0){ return []; }
 
         return village.listUserIdsWithCondition({
             alive  : true,
             except : [selfId],
-            exFunc : userRole => {
-                return (userRole.chatGroup == this.chatGroup);
+            exceptFunc : user => {
+                return (user.chatRoom === this.chatGroup);
             },
         })
     },
@@ -41,9 +41,9 @@ Werewolf.prototype = {
     evalActionNight: function(village, selfId, act){
         // act: { type:"bite", userId, power }
         // first night
-        if(village.phase.dayCount == 0){ return {}; }
+        if(village.phase.dayCount === 0){ return {}; }
 
-        var ret = {
+        const ret = {
             subjectId : selfId,
             objectId  : act.userId,
             power     : act.power,

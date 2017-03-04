@@ -9,9 +9,9 @@ module.exports = {
 };
 
 // imports
-rule = require("../village/rule");
-role = require("../role")
-night = require("./night")
+const rule = require("../village/rule");
+const role = require("../role")
+const night = require("./night")
 
 // join room
 function joinRoom(io, socket, village){
@@ -26,7 +26,7 @@ function joinRoom(io, socket, village){
 // exit room
 function exitRoom(io, socket, village){
     return function(){
-        userId = village.socketIdToUserId(socket.id)
+        const userId = village.socketIdToUserId(socket.id)
         village.removeUser(userId);
 
         // list of {id,name}
@@ -47,9 +47,9 @@ function changeRule(io, socket, village){
 function startGame(io, village){
     return function(){
         // set role
-        roleList = village.rule.suffledRoleList();
-        idx = 0;
-        for(let [userId,user] of village.users){
+        let roleList = village.rule.suffledRoleList();
+        let idx = 0;
+        for(const [userId,user] of village.users){
             user.role = role[roleList[idx]]();
             user.role.mountEvents(village);
 
@@ -59,15 +59,15 @@ function startGame(io, village){
         }
 
         // set chat room
-        for(let [userId,user] of village.users){
-            if(user.role.chatType == role.common.chatType.PERSONAL){
+        for(const [userId,user] of village.users){
+            if(user.role.chatType === role.common.chatType.PERSONAL){
                 user.chatRoom = userId;
-            } else if(user.role.chatType == role.common.chatType.GROUP){
+            } else if(user.role.chatType === role.common.chatType.GROUP){
                 user.chatRoom = user.role.chatGroup;
             }
 
             io.sockets.sockets[user.socketId].join(user.chatRoom);
-            io.to(user.chatRoom).emit("debug", "あなたは" + user.role.type + "です");
+            io.to(user.chatRoom).emit("debug", "chat room:" + user.chatRoom);
         }
 
         // next phase

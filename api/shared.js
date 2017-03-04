@@ -4,18 +4,18 @@ module.exports = {
 };
 
 // imports
-GamePhase = require("../village/phase").GamePhase;
-before_game = require("./before_game");
-morning = require("./morning");
-daytime = require("./daytime");
-afternoon = require("./afternoon");
-evening = require("./evening");
+const GamePhase = require("../village/phase").GamePhase;
+const before_game = require("./before_game");
+const morning   = require("./morning");
+const daytime   = require("./daytime");
+const afternoon = require("./afternoon");
+const evening   = require("./evening");
 
 
 // readyToShift
 function readyToShift(io, socket, village) {
     return function(){
-        userId = village.socketIdToUserId(socket.id)
+        const userId = village.socketIdToUserId(socket.id)
         village.users.get(userId).readyToShift = true;
 
         console.log(village.users.get(userId).name + " is ready");

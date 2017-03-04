@@ -2,16 +2,15 @@
 module.exports = Village;
 
 // imports
-Phase = require('./phase');
-User  = require('./user');
-Rule  = require('./rule');
-Log   = require('./log');
-
-role = require("../role/");
+const Phase = require('./phase');
+const User  = require('./user');
+const Rule  = require('./rule');
+const Log   = require('./log');
+const role = require("../role/");
 
 // Village
 function Village(villageId){
-    var village = Object.create(Village.prototype);
+    const village = Object.create(Village.prototype);
 
     village.Id = villageId;
     village.masterId = null;
@@ -66,7 +65,7 @@ Village.prototype = {
 
     // phase
     readyToShift: function(){
-        for(let [id, user] of this.users){
+        for(const [id, user] of this.users){
             // alive but not ready
             if(user.alive && !user.readyToShift){
                 return false;
@@ -80,7 +79,7 @@ Village.prototype = {
         this.phase.phaseShift(nPhase, this.rule.dayTime, this.rule.nightTime);
 
         // reset flg
-        for(let [k,v] of this.users){
+        for(const [k,v] of this.users){
             v.readyToShift = false;
         }
 
@@ -89,33 +88,33 @@ Village.prototype = {
 
     // action
     getCandidatesMap: function(){ // => map{ userId: [userId] }
-        ret = {};
-        for(let [id,user] of this.users){
+        const map = new Map();
+        for(const [id,user] of this.users){
             if(user.alive && user.role.actionCandidates){
-                list = user.role.actionCandidates(this, id);
-                if(list != []){
-                    ret[id] = list;
+                const list = user.role.actionCandidates(this, id);
+                if(list !== []){ // TODO: ?
+                    map.set(id, list);
                 }
             }
         }
-        return ret;
+        return map;
     },
     getResultMap: function(){ // => map{ userId: result{} }
-        ret = {};
-        for(let [id,user] of this.users){
+        const map = new Map();
+        for(const [id,user] of this.users){
             if(user.alive && user.role.actionResult){
-                res = user.role.actionResult(this, id);
-                if(res != {}){
-                    ret[id] = res;
+                const res = user.role.actionResult(this, id);
+                if(res !== {}){ // TODO: ?
+                    map.set(id, res);
                 }
             }
         }
-        return ret;
+        return map;
     },
     evalActionMorning: function(){ // => {deadIds: [userId], }
-        if(this.phase.dayCount == 1){ return { deadIds:[] }; }
+        if(this.phase.dayCount === 1){ return {}; } // first morning
 
-        var morningResult = {}
+        let morningResult = {}
         // see
         if(this.actionMap.has("see")){
             for(const act of this.actionMap.get("see")){
@@ -126,7 +125,7 @@ Village.prototype = {
         // bite
         if(this.actionMap.has("bite")){
             // summarize all bite action
-            let summary = new Map();
+            const summary = new Map();
             for(const act of this.actionMap.get("bite")){
                 if(summary.has(act.objectId)){ // init
                     summary.set(act.objectId, {
@@ -136,28 +135,28 @@ Village.prototype = {
                     });
                 }
                 summary.get(act.objectId).powerSum += act.power
-                if       (act.power >  summary.get(act.objectId).subjectPower){
+                if       (act.power  >  summary.get(act.objectId).subjectPower){
                     summary.get(act.objectId).subjectIds   = [act.subjectId];
                     summary.get(act.objectId).subjectPower = act.power;
-                } else if(act.power == summary.get(act.objectId).subjectPower){
+                } else if(act.power === summary.get(act.objectId).subjectPower){
                     summary.get(act.objectId).subjectIds.push(act.subjectId);
                 }
             }
             // pick victim
-            objectIds = [];
-            maxPower = 0;
+            let objectIds = [];
+            let maxPower = 0;
             for(const [k,v] of summary){
-                if       (v.powerSum >  maxPower){
+                if       (v.powerSum  >  maxPower){
                     objectIds = [k];
                     maxPower  = v.powerSum;
-                } else if(v.powerSum >  maxPower){
+                } else if(v.powerSum === maxPower){
                     objectIds.push(k);
                 }
             }
             // random choice if tie
-            objectId   = objectIds [Math.floor(Math.random() * objectIds.length)];
-            subjectIds = summary.get(objectId).subjectIds;
-            subjectId  = subjectIds[Math.floor(Math.random() * subjectIds.length)];
+            const objectId   = objectIds [Math.floor(Math.random() * objectIds.length)];
+            const subjectIds = summary.get(objectId).subjectIds;
+            const subjectId  = subjectIds[Math.floor(Math.random() * subjectIds.length)];
 
             morningResult = this.event_bited(subjectId, objectId, true, morningResult);
         }
@@ -181,11 +180,11 @@ Village.prototype = {
         return result;
     },
     event_executed: function(objectId, result={}){
-        result.executedId = objectIds;
+        result.executedId = objectId;
         return this.event_died(objectId, result);
     },
     event_died: function(objectId, result={}){
-        this.user.get(objectId).alive = false;
+        this.users.get(objectId).alive = false;
         return result;
     },
     event_morning: function(result={}){ return result; },
@@ -214,23 +213,23 @@ Village.prototype = {
         // uniquerify
         for(const [k,v] of this.voteMap){
             v.subjectIds = v.subjectIds.filter((e,i,a)=>{
-                return a.indexOf(e) == i;
+                return a.indexOf(e) === i;
             });
         }
 
-        maxVotes = 0;
-        eIds = [];
+        let eIds = [];
+        let maxVotes = 0;
         for(const [k,v] of this.voteMap){
-            if       (v.count >  maxVotes){
+            if       (v.count  >  maxVotes){
                 eIds = [k];
                 maxVotes = v.count;
-            } else if(v.count == maxVotes){
+            } else if(v.count === maxVotes){
                 eIds.push(k);
             }
         }
 
-        eId = eIds[Math.floor(Math.random() * eIds.length)];
-        voteResult = this.event_executed(eid, {});
+        const eId = eIds[Math.floor(Math.random() * eIds.length)];
+        const voteResult = this.event_executed(eId, {});
 
         // reset
         this.voteMap.clear();
@@ -246,18 +245,18 @@ Village.prototype = {
 
            exFunc  : user => bool // take if true
         */
-        ret = [];
+        let ret = [];
         for(const [id,user] of this.users){
             if(cond.alive  && !user.alive){ continue; }
             if(cond.except && cond.except.indexOf(id)>=0){ continue; }
-            if(cond.exFunc && !cond.exFunc(user.role)){ continue; }
+            if(cond.exceptFunc && cond.exceptFunc(user)){ continue; }
 
             ret.push(id);
         }
         return ret;
     },
     listUsers: function(){ // => [{id,name}]
-        ret = [];
+        let ret = [];
         for(const [id,user] of this.users){
             ret.push({
                 id   : id,
@@ -269,7 +268,7 @@ Village.prototype = {
 
     socketIdToUserId: function(socketId){ // => userId
         for(const [id,user] of this.users){
-            if(user.socketId == socketId){ return id; }
+            if(user.socketId === socketId){ return id; }
         }
         console.log("error: no user has socketId " + socketId);
     },

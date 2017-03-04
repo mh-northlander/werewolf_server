@@ -7,18 +7,19 @@ module.exports = {
 };
 
 // imports
-GamePhaseAfternoon = require('../village/phase').GamePhase.AFTERNOON;
-shared = require('./shared');
-evening = require('./evening');
+const GamePhaseAfternoon = require('../village/phase').GamePhase.AFTERNOON;
+const shared = require('./shared');
+const evening = require('./evening');
 
 
 // vate
 function vote(io, socket, village){
     return function(vote){
         // vote: [userId]
-        console.log(vote)
-        userId = village.socketIdToUserId(socket.id);
+        console.log(village.users.get(village.socketIdToUserId(socket.id)).name +
+                    " votes to " + village.users.get(vote[0]).name);
 
+        const userId = village.socketIdToUserId(socket.id);
         if(!village.users.get(userId).readyToShift){
             village.addVote(userId, vote);
         }
@@ -30,9 +31,9 @@ function vote(io, socket, village){
 
 // begin
 function begin(io, village){
-    console.log("afternoon b");
+    console.log("afternoon begin");
     // shift phase
-    phase = village.shiftPhase(GamePhaseAfternoon);
+    const phase = village.shiftPhase(GamePhaseAfternoon);
     io.sockets.emit("phaseChanged", {
         phase:     phase.gamePhase,
         dayCount:  phase.dayCount,
@@ -40,14 +41,14 @@ function begin(io, village){
     });
 
     // vote candidate
-    for(let [id,user] of village.users){
-        candidates = village.voteCandidates(id);
+    for(const [id,user] of village.users){
+        const candidates = village.voteCandidates(id);
         io.to(village.userIdToSocketId(id)).emit("voteCandidates", candidates);
     }
 };
 
 // end
 function end(io, village){
-    console.log("afternoon e");
+    console.log("afternoon end");
     evening.Begin(io, village);
 };

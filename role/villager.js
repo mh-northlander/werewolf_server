@@ -2,15 +2,15 @@
 module.exports = Villager;
 
 // imports
-common = require('./common');
-Role = require('./role');
+const common = require('./common');
+const Role = require('./role');
 
 
 // villager
 Villager.Name = "Villager";
 
 function Villager(){
-    var vil = Object.create(Villager.prototype);
+    const vil = Object.create(Villager.prototype);
     Object.assign(vil, Role(Villager.Name))
 
     return vil;

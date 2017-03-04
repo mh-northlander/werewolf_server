@@ -6,7 +6,7 @@ module.exports = Log;
 
 // Log
 function Log(){
-    var log = Object.create(Log.prototype);
+    const log = Object.create(Log.prototype);
 
     log.action = {};
     log.chat = {};

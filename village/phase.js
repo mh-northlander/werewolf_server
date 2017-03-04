@@ -20,7 +20,7 @@ Phase.GamePhase = GamePhase
 
 // Phase
 function Phase(){
-    var phase = Object.create(Phase.prototype);
+    const phase = Object.create(Phase.prototype);
 
     phase.gamePhase = GamePhase.BEFOREGAME;
 
@@ -31,36 +31,12 @@ function Phase(){
 }
 
 Phase.prototype = {
-    nextPhase : function(){
-        switch(this.gamePhase){
-        case GamePhase.BEFORE:
-            return GamePhase.NIGHT;
-            break;
-        case GamePhase.NIGHT:
-            return GamePhase.MORNING;
-            break;
-        case GamePhase.MORNING:
-            return GamePhase.DAYTIME;
-            break;
-        case GamePhase.DAYTIME:
-            return GamePhase.AFTERNOON;
-            break;
-        case GamePhase.AFTERNOON:
-            return GamePhase.EVENING;
-            break;
-        case GamePhase.EVENING:
-            return GamePhase.NIGHT;
-            break;
-        default:
-        }
-    },
-
     phaseShift : function(nextPhase, dayTime, nightTime){
         // phase shift
         this.gamePhase = nextPhase;
 
         // day count
-        if(nextPhase == GamePhase.MORNING){
+        if(nextPhase === GamePhase.MORNING){
             this.dayCount += 1;
         }
 

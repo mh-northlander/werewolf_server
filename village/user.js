@@ -2,12 +2,12 @@
 module.exports = User;
 
 // imports
-role = require('../role/')
+const role = require('../role/')
 
 
 // User
 function User(userId, userName, socketId){
-    var user = Object.create(User.prototype);
+    const user = Object.create(User.prototype);
 
     // info
     user.socketId = socketId;

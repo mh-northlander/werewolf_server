@@ -6,17 +6,17 @@ module.exports = {
 
 
 // import
-GamePhaseEvening = require('../village/phase').GamePhase.EVENING;
-night = require('./night');
+const GamePhaseEvening = require('../village/phase').GamePhase.EVENING;
+const night = require('./night');
 
 // eveningResult
 
 //// emit
 // begin
 function begin(io, village){
-    console.log("evening b");
+    console.log("evening begin");
     // shift phase
-    phase = village.shiftPhase(GamePhaseEvening);
+    const phase = village.shiftPhase(GamePhaseEvening);
     io.sockets.emit("phaseChanged", {
         phase:     phase.gamePhase,
         dayCount:  phase.dayCount,
@@ -24,12 +24,11 @@ function begin(io, village){
     });
 
     // evening result
-    result = village.evalVote();
-    io.sockets.emit("voteResult", result);
+    io.sockets.emit("voteResult", village.evalVote());
 };
 
 // end
 function end(io, village){
-    console.log("evening e");
+    console.log("evening end");
     night.Begin(io, village);
 };

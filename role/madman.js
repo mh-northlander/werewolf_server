@@ -2,15 +2,15 @@
 module.exports = Madman;
 
 // imports
-common = require('./common');
-Role = require('./role');
+const common = require('./common');
+const Role = require('./role');
 
 
 // madman
 Madman.Name = "Madman";
 
 function Madman(){
-    var madman = Object.create(Madman.prototype);
+    const madman = Object.create(Madman.prototype);
     Object.assign(madman, Role(Madman.Name))
 
     return madman;

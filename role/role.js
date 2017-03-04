@@ -2,12 +2,12 @@
 module.exports = Role;
 
 // imports
-common = require('./common');
+const common = require('./common');
 
 
 // Role
 function Role(type = "Role"){
-    var role = Object.create(Role.prototype);
+    const role = Object.create(Role.prototype);
 
     role.type = type;
 

@@ -2,15 +2,15 @@
 module.exports = Guard;
 
 // imports
-common = require('./common');
-Role = require('./role');
+const common = require('./common');
+const Role = require('./role');
 
 
 // guard
 Guard.Name = "Guard";
 
 function Guard(){
-    var guard = Object.create(Guard.prototype);
+    const guard = Object.create(Guard.prototype);
     Object.assign(guard, Role(Guard.Name));
 
     guard.guardingId = null;
@@ -28,22 +28,22 @@ Guard.prototype = {
 
     actionCandidates: function(village, selfId){
         // first night
-        if(village.phase.dayCount == 0){ return []; }
+        if(village.phase.dayCount === 0){ return []; }
 
-        exp = [selfId];
+        let excp = [selfId];
         if(this.log.length > 0){
-            exp.push(this.log[this.log.length-1].userId)
+            excp.push(this.log[this.log.length-1].userId)
         }
 
         return village.listUserIdsWithCondition({
             alive  : true,
-            except : exp,
+            except : excp,
         })
     },
 
     evalActionNight: function(village, selfId, act){
         //
-        if(village.phase.dayCount == 0){ return {}; }
+        if(village.phase.dayCount === 0){ return {}; }
 
         // act: { type:"guard", userId }
         // log
@@ -54,9 +54,9 @@ Guard.prototype = {
     },
 
     mountEvents: function(village){
-        oldBited = village.event.bited;
+        const oldBited = village.event.bited;
         village.event.bited = function(subjectId, objectId, success, result={}){
-            if(objectUserId == this.guardingId){
+            if(objectUserId === this.guardingId){
                 return oldBited(subjectId, objectId, false, result);
             }
             return oldBited(subjectId, objectId, success, result);

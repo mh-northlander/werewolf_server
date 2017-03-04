@@ -12,8 +12,7 @@ exports.Madman   = require('./madman');
 exports.Fox      = require('./fox');
 
 // role set
-exports.roleNameList = roleNameList;
-var roleNameList = [
+const roleNameList = [
     "Villager",
     "Werewolf",
     "Seer",
@@ -22,10 +21,11 @@ var roleNameList = [
     "Madman",
     "Fox",
 ];
+exports.roleNameList = roleNameList;
 
 exports.defaultRoleSet = function(num){
-    ret = new Map();
-    for(var name of roleNameList){
+    let ret = new Map();
+    for(const name of roleNameList){
         ret.set(name, 0)
     }
 
@@ -35,7 +35,7 @@ exports.defaultRoleSet = function(num){
     ret.set("Medium", num > 6 ? 1 : 0);
     ret.set("Madman", num > 8 ? 1 : 0);
 
-    c = 0;
+    let c = 0;
     ret.forEach(v => c+=v);
     ret.set("Villager", c);
 

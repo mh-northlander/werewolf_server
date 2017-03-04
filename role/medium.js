@@ -2,15 +2,15 @@
 module.exports = Medium;
 
 // imports
-common = require('./common');
-Role = require('./role');
+const common = require('./common');
+const Role = require('./role');
 
 
 // medium
 Medium.Name = "Medium";
 
 function Medium(){
-    var medium = Object.create(Medium.prototype);
+    const medium = Object.create(Medium.prototype);
     Object.assign(medium, Role(Medium.Name))
 
     return medium;
@@ -24,15 +24,15 @@ Medium.prototype = {
 
     actionResult: function(village, selfId){
         // first night
-        if(village.phase.dayCount == 0){ return {}; }
+        if(village.phase.dayCount === 0){ return {}; }
 
         return {}; // TODO: vote log
 
-        objectId  = village.log[village.phase.dayCount].execution.executedId;
-        mediumRes = village.users.get(objectId).role.fromMedium;
+        const objectId  = village.log[village.phase.dayCount].execution.executedId;
+        const fromMed = village.users.get(objectId).role.fromMedium;
         return {
             objectId : objectId,
-            result   : mediumRes==common.type.WEREWOLF ? mediumRes : common.type.HUMAN,
+            result   : fromMed===common.type.WEREWOLF ? fromMed : common.type.HUMAN,
         };
     },
 }

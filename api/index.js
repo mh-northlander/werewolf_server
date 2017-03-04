@@ -1,14 +1,14 @@
 // imports
-before_game = require("./before_game");
-after_game  = require("./after_game");
+const before_game = require("./before_game");
+const after_game  = require("./after_game");
 
-night     = require("./night");
+const night     = require("./night");
 // morning   = require("./morning");
 // daytime   = require("./daytime");
-afternoon = require("./afternoon");
+const afternoon = require("./afternoon");
 // evening   = require("./evening");
 
-shared = require("./shared");
+const shared = require("./shared");
 
 /* // memo io
    io = require("socket.io")()               // io: Server
@@ -29,9 +29,9 @@ shared = require("./shared");
    soc.broadcast.emit()           // all w/o self
 */
 
-util = require("../util")
-var village = require('../village/');
-var vil = village.Village(util.randomString(32));
+const util = require("../util")
+const village = require('../village/');
+const vil = village.Village(util.randomString(32));
 
 module.exports.mountAPIs = function(io){
     io.on("connection", function(socket){
