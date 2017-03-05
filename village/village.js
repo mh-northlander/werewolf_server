@@ -92,7 +92,7 @@ Village.prototype = {
         for(const [id,user] of this.users){
             if(user.alive && user.role.actionCandidates){
                 const list = user.role.actionCandidates(this, id);
-                if(list !== []){ // TODO: ?
+                if(list.length !== 0){
                     map.set(id, list);
                 }
             }
@@ -104,7 +104,7 @@ Village.prototype = {
         for(const [id,user] of this.users){
             if(user.alive && user.role.actionResult){
                 const res = user.role.actionResult(this, id);
-                if(res !== {}){ // TODO: ?
+                if(Object.keys(res).length !== 0){
                     map.set(id, res);
                 }
             }
