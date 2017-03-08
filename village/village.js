@@ -161,6 +161,9 @@ Village.prototype = {
             morningResult = this.event_bited(subjectId, objectId, true, morningResult);
         }
 
+        // become morning
+        morningResult = this.event_morning(morningResult);
+
         // reset
         this.actionMap.clear();
 
