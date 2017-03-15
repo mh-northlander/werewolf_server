@@ -41,6 +41,7 @@ module.exports.mountAPIs = function(io){
         // before game
         socket.on('joinRoom',   before_game.JoinRoom(io,socket, vil));
         socket.on('exitRoom',   before_game.ExitRoom(io,socket, vil));
+        socket.on('changeName', before_game.ChangeName(io,socket, vil));
         socket.on('changeRule', before_game.ChangeRule(io,socket, vil));
         socket.on('startGame',  before_game.StartGame(io, vil));
 
@@ -57,5 +58,7 @@ module.exports.mountAPIs = function(io){
 
         // action
         socket.on('action', night.Action(io,socket, vil));
+
+        // debug
     });
 }

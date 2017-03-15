@@ -48,10 +48,6 @@ Village.prototype = {
         } else {                    // add
             this.users.set(userId, User(userId, name, socketId))
         }
-
-        if(this.masterId == null){
-            this.masterId = userId;
-        }
     },
     removeUser: function(userId){
         this.users.delete(userId);

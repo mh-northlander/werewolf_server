@@ -3,7 +3,8 @@ module.exports = {
     JoinRoom : joinRoom,
     ExitRoom : exitRoom,
 
-    ChangeRule    : changeRule,
+    ChangeName : changeName,
+    ChangeRule : changeRule,
 
     StartGame : startGame,
 };
@@ -30,6 +31,14 @@ function exitRoom(io, socket, village){
         village.removeUser(userId);
 
         // list of {id,name}
+        io.sockets.emit("memberChanged", village.listUsers());
+    }
+};
+
+// change name
+function changeName(io, socket, village){
+    return function(ruleObj){
+        village.addUser(data.userId, socket.id, data.name);
         io.sockets.emit("memberChanged", village.listUsers());
     }
 };

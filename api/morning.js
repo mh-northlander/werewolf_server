@@ -37,7 +37,7 @@ function begin(io, village){
     });
 
     // morning result
-    io.sockets.emit("actionResult", village.evalActionMorning());
+    io.sockets.emit("morningResult", village.evalActionMorning());
 };
 
 // end
