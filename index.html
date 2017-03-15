@@ -12,106 +12,160 @@
 
     <body>
         <div class="container">
-            <h1>WebSocket-Chat</h1>
-            <form class="form-inline">
-                <div class="form-group">
-                    <label for="msgForm"> message: </label>
-                    <input type="text" class="form-control" id="msgForm">
-                </div>
-                <button type="submit" class="btn btn-primary" id="join">join room</button>
+            <h1>werewolf-html-client</h1>
+            <form id="form-beforegame" class="form-inline">
+                <input type="text" class="form-control" id="name_form">
+                <button type="button" class="btn btn-primary" id="join">join room</button>
                 <button type="button" class="btn btn-primary" id="exit">exit room</button>
-                <button type="button" class="btn btn-primary" id="gameStart">gameStart</button>
+                <button type="button" class="btn btn-primary" id="game_start">gameStart</button>
+                <div id="id_name">hoge</div>
             </form>
-            <form class="form-inline">
-                <button type="button" class="btn btn-primary" id="morningCheck">morning result check</button>
-                <button type="button" class="btn btn-primary" id="finishDisc">finish discussion</button>
+
+            <form id="form-phaseshift" class="form-inline">
+                <button type="button" class="btn btn-primary" id="morning_check">morning check</button>
+                <button type="button" class="btn btn-primary" id="finish_daytime">finish daytime</button>
+                <select id="vote_cands">
+                    <option value="none">vote</option>
+                </select>
                 <button type="button" class="btn btn-primary" id="vote">vote</button>
-                <button type="button" class="btn btn-primary" id="eveningCheck">evening result check</button>
+                <button type="button" class="btn btn-primary" id="evening_check">evening check</button>
             </form>
-            <div id="chatLogs"></div>
+
+            <form id="form-action" class="form-inline">
+                <select id="action_cands">
+                    <option value="none">act</option>
+                </select>
+                <select id="bite_power">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+                <button type="button" class="btn btn-primary" id="action">action</button>
+            </form>
+
+            <form id="form-debug" class="form-inline">
+                <button type="button" class="btn btn-primary" id="clear_log">clear log</button>
+                <button type="button" class="btn btn-primary" id="end_night">end night</button>
+            </form>
+            <div id="logs">fuga</div>
         </div>
 
         <script type="text/javascript">
-         function appendMsg(text) {
-             $("#chatLogs").append("<div>" + text + "</div>");
-         }
+         function appendLog(text){ $("#logs").append("<div>" + text + "</div>"); }
+         function clearLog()     { $("#logs").html(""); }
 
+         // init
          function randomString(length) {
              return Math.round((Math.pow(36, length + 1) - Math.random() * Math.pow(36, length))).toString(36).slice(1);
          };
-         var userId = randomString(8)
-         var socket = io.connect();
+         const userId = randomString(8)
+         $("#id_name").html("id: " + userId);
 
-         socket.on("connectionEstablished", function(){
-             appendMsg("connect!");
-         });
-         $("form").submit(function(e){
-             var message = $("#msgForm").val();
-             $("#msgForm").val("");
-             if(message != ""){
+         // socket on
+         let socket = io.connect();
+         socket.on("connectionEstablished", function(){ appendLog("connect!"); });
+         socket.on("debug", function(debug){
+             console.log(debug);
+             appendLog(debug);
+         })
+
+         // debug
+         $("#clear_log").click(function(e){ clearLog(); });
+         $("#end_night").click(function(e){ appendLog("not yet"); });
+
+         // before
+         $("#join").click(function(e){
+             const message = $("#name_form").val();
+             if(message == ""){
+                 appendLog("input your name");
+             } else {
+                 $("#name_form").val("");
                  socket.emit("joinRoom", {userId : userId, name: message});
+                 $("#id_name").html("id: " + userId + ", name: " + message);
                  e.preventDefault();
              }
          });
          $("#exit").click(function(e){
              socket.emit("exitRoom");
+             $("#id_name").html("id: " + userId);
          });
+         $("#gameStart").click(function(e){ socket.emit("startGame"); });
 
-         idToNameMap = {};
-         nameToIdMap = {};
+         // phase
+         let id2nameMap = {};
+         let name2idMap = {};
          socket.on("memberChanged", function(pairs){ // pairs:[{id, name}]
-             idToNameMap = pairs.reduce((ret,p)=>{
+             id2nameMap = pairs.reduce((ret,p)=>{ // setup map
                  ret[p.id] = p.name;
                  return ret;
              },{});
-             nameToIdMap = pairs.reduce((ret,p)=>{
+             name2idMap = pairs.reduce((ret,p)=>{
                  ret[p.name] = p.id;
                  return ret;
              },{});
 
-             appendMsg(pairs.reduce((ret,p)=>{ret.push(p.name); return ret;},[]));
-         });
-         $("#gameStart").click(function(e){
-             socket.emit("startGame");
+             appendLog(pairs.reduce((ret,p)=>{ret.push(p.name); return ret;},[]));
          });
 
          socket.on("phaseChange", function(data){
-             appendMsg(data.phase + " of day " + data.dayCount + ", sec:" + data.timeCount);
+             appendLog(data.phase + " of day " + data.dayCount + ", sec:" + data.timeCount);
          });
-         socket.on("roleAck", function(roleName){
-             appendMsg("role: " + roleName);
-         });
-         $("#morningCheck").click(function(e){
-             socket.emit("morningResultChecked");
-         });
-         $("#finishDisc").click(function(e){
-             socket.emit("finishDiscussion");
-         });
-         $("#eveningCheck").click(function(e){
-             socket.emit("eveningResultChecked");
-         });
-         socket.on("debug", function(debug){
-             console.log(debug);
-             appendMsg(debug);
-         })
-         voteCandidateIds = [];
+         socket.on("roleAck", function(roleName){ appendLog("role: " + roleName); });
+
+         $("#morning_check").click(function(e){ socket.emit("morningResultChecked"); });
+         $("#finish_daytime").click(function(e){ socket.emit("finishDiscussion"); });
+         $("#evening_check").click(function(e){ socket.emit("eveningResultChecked"); });
+
+         // vote
          socket.on("voteCandidates", function(ids){
-             voteCandidates = ids
-             appendMsg(ids.reduce((r,id)=>{r.push(idToNameMap[id]); return r;},[]));
+             // appendLog(ids.reduce((r,id)=>{r.push(idToNameMap[id]); return r;},[]));
+             appendLog("select and vote")
+
+             $("#vote_cands").html("");
+             for(const id of ids){
+                 $("#vote_cands").append("<option value="+id+">"+id2nameMap[id]+"</option>");
+             }
          })
          $("#vote").click(function(e){
-             var vote = [$("#msgForm").val()];
-             $("#msgForm").val("");
-             id = nameToIdMap[vote]
-             if(id){
-                 socket.emit("vote", [id]);
-             }
+             const voteId = document.getElementById("vote_cands").value;
+             if(id!="" || id!="none"){ socket.emit("vote", [voteId]); }
+             $("#vote_cands").html("");
          });
-
          socket.on("voteResult", function(result){
              console.log(result);
-             appendMsg("We excute " + idToNameMap[result.executedId] + ", and We hope the village become peace");
+             appendLog("We excute " + idToNameMap[result.executedId] + ", and We hope the village become peace");
          })
+
+         // action
+         socket.on("actionCandidates", function(ids){
+             appendLog("select and action")
+
+             $("#action_cands").html("");
+             for(const id of ids){
+                 $("#action_cands").append("<option value="+id+">"+id2nameMap[id]+"</option>");
+             }
+         })
+         $("#action").click(function(e){
+             const actId = document.getElementById("action_cands").value;
+             const power = document.getElementById("bite_power").value;
+             if(id!="" || id!="none"){ socket.emit("action", {userId:actId, bitePower:power}); }
+             $("#action_cands").html("");
+         });
+         socket.on("actionResult", function(result){
+             console.log(result);
+             appendLog(id2nameMap[result.objectId]+" : "+result.type);
+         })
+
+         //
+         socket.on("morningResult", function(result){
+             console.log(result);
+             let str = result.deadIds.reduce((ret,id)=>{
+                 ret += ", " + id2nameMap[id];
+                 return ret;
+             }, "");
+             appendLog("deads" + str);
+         });
+
 
         </script>
     </body>
