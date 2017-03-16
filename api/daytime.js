@@ -20,6 +20,7 @@ function finishDiscussion(io, socket, village){
 
         console.log("finish discussion: " + user.name);
         if(village.readyToShift()){
+            clearTimeOut(timeOutId);
             end(io, village);
         }
     };
@@ -27,6 +28,7 @@ function finishDiscussion(io, socket, village){
 
 
 // begin
+let timeOutId;
 function begin(io, village){
     console.log("daytime begin");
     // shift phase
@@ -39,7 +41,7 @@ function begin(io, village){
 
     // timer
     console.log("start count: " + phase.secCount);
-    setTimeout(() => { end(io, village); }, phase.secCount*1000);
+    timeOutId = setTimeout(() => { end(io, village); }, phase.secCount*1000);
 };
 
 // end

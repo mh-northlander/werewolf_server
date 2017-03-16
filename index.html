@@ -18,7 +18,7 @@
                 <button type="button" class="btn btn-primary" id="join">join room</button>
                 <button type="button" class="btn btn-primary" id="exit">exit room</button>
                 <button type="button" class="btn btn-primary" id="game_start">gameStart</button>
-                <div id="id_name">hoge</div>
+                <div id="id_name_role"></div>
             </form>
 
             <form id="form-phaseshift" class="form-inline">
@@ -47,7 +47,7 @@
                 <button type="button" class="btn btn-primary" id="clear_log">clear log</button>
                 <button type="button" class="btn btn-primary" id="end_night">end night</button>
             </form>
-            <div id="logs">fuga</div>
+            <div id="logs">log:</div>
         </div>
 
         <script type="text/javascript">
@@ -59,7 +59,9 @@
              return Math.round((Math.pow(36, length + 1) - Math.random() * Math.pow(36, length))).toString(36).slice(1);
          };
          const userId = randomString(8)
-         $("#id_name").html("id: " + userId);
+         let name = "";
+         let role = ""
+         $("#id_name_role").html("id: " + userId + ", name: " + name + ", role: " + role);
 
          // socket on
          let socket = io.connect();
@@ -71,7 +73,7 @@
 
          // debug
          $("#clear_log").click(function(e){ clearLog(); });
-         $("#end_night").click(function(e){ appendLog("not yet"); });
+         $("#end_night").click(function(e){ socket.emit("endNight"); });
 
          // before
          $("#join").click(function(e){
@@ -81,13 +83,14 @@
              } else {
                  $("#name_form").val("");
                  socket.emit("joinRoom", {userId : userId, name: message});
-                 $("#id_name").html("id: " + userId + ", name: " + message);
+                 name = message
+                 $("#id_name_role").html("id: " + userId + ", name: " + name + ", role: " + role);
                  e.preventDefault();
              }
          });
          $("#exit").click(function(e){
              socket.emit("exitRoom");
-             $("#id_name").html("id: " + userId);
+             $("#id_name_role").html("id: " + userId + ", name: " + name + ", role: " + role);
          });
          $("#gameStart").click(function(e){ socket.emit("startGame"); });
 
@@ -110,7 +113,11 @@
          socket.on("phaseChange", function(data){
              appendLog(data.phase + " of day " + data.dayCount + ", sec:" + data.timeCount);
          });
-         socket.on("roleAck", function(roleName){ appendLog("role: " + roleName); });
+         socket.on("roleAck", function(roleName){
+             role = roleName;
+             $("#id_name_role").html("id: " + userId + ", name: " + name + ", role: " + role);
+             appendLog("role: " + role);
+         });
 
          $("#morning_check").click(function(e){ socket.emit("morningResultChecked"); });
          $("#finish_daytime").click(function(e){ socket.emit("finishDiscussion"); });
@@ -118,7 +125,6 @@
 
          // vote
          socket.on("voteCandidates", function(ids){
-             // appendLog(ids.reduce((r,id)=>{r.push(idToNameMap[id]); return r;},[]));
              appendLog("select and vote")
 
              $("#vote_cands").html("");
@@ -165,7 +171,6 @@
              }, "");
              appendLog("deads" + str);
          });
-
 
         </script>
     </body>

@@ -54,11 +54,12 @@ module.exports.mountAPIs = function(io){
         socket.on('vote', afternoon.Vote(io,socket, vil));
 
         // chat
-        socket.on('chat',   night.Chat(io,socket, vil));
+        socket.on('chat', night.Chat(io,socket, vil));
 
         // action
         socket.on('action', night.Action(io,socket, vil));
 
         // debug
+        socket.on("endNight", night.EndNight(io,socket,vil));
     });
 }

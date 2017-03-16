@@ -2,6 +2,8 @@ module.exports = {
     Action: action,
     Chat: chat,
 
+    EndNight : endNight,
+
     Begin: begin,
     End  : end,
 };
@@ -32,9 +34,17 @@ function chat(io, socket, village){
     };
 };
 
+// end night (for debug)
+function endNight(io, socket, village){
+    return function(){
+        clearTimeOut(timeOutId);
+        end(io, village);
+    };
+}
 
 //// emit
 // begin
+let timeOutId;
 function begin(io, village){
     console.log("night begin");
     // shift
@@ -61,7 +71,7 @@ function begin(io, village){
 
     // timer
     console.log("start count: " + phase.secCount + " sec");
-    setTimeout(() => { end(io, village); }, phase.secCount*1000);
+    timeOutId = setTimeout(() => { end(io, village); }, phase.secCount*1000);
 };
 
 // end
