@@ -92,7 +92,7 @@
              socket.emit("exitRoom");
              $("#id_name_role").html("id: " + userId + ", name: " + name + ", role: " + role);
          });
-         $("#gameStart").click(function(e){ socket.emit("startGame"); });
+         $("#game_start").click(function(e){ socket.emit("startGame"); });
 
          // phase
          let id2nameMap = {};
