@@ -11,22 +11,26 @@ module.exports = {
 
 // imports
 const rule = require("../village/rule");
+const phase = require("../village/phase")
 const role = require("../role")
 const night = require("./night")
 
 // join room
 function joinRoom(io, socket, village){
     return function(data){
-        village.addUser(data.userId, socket.id, data.name);
+        if(phaseCheck(io, socket, village)){
+            village.addUser(data.userId, socket.id, data.name);
 
-        // list of {id,name}
-        io.sockets.emit("memberChanged", village.listUsers());
+            // list of {id,name}
+            io.sockets.emit("memberChanged", village.listUsers());
+        }
     }
 };
 
 // exit room
 function exitRoom(io, socket, village){
     return function(){
+        if(phaseCheck(io, socket, village)){}
         const userId = village.socketIdToUserId(socket.id)
         village.removeUser(userId);
 
@@ -83,3 +87,13 @@ function startGame(io, village){
         night.Begin(io, village);
     }
 };
+
+function phaseCheck(io, socket, village, eventName){
+    if(village.phase.gamePhase === phase.GamePhase.BEFOREGAME){
+        return true
+    } else {
+        console.log("badRequest: ");
+        io.to(socket.id).emit("error", {statusCode:400, message:"badRequest"})
+        return false
+    }
+}

@@ -30,6 +30,7 @@ const evening   = require("./evening");
 const util = require("../util")
 const village = require('../village/');
 const vil = village.Village(util.randomString(32));
+const gamePhases = village.Phase.GamePhase
 
 module.exports.mountAPIs = function(io){
     io.on("connection", function(socket){

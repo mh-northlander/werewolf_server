@@ -190,6 +190,10 @@
              appendLog("deads" + str);
          });
 
+         socket.on("error", function(data){
+             console.log(data);
+         })
+
         </script>
     </body>
 </html>
