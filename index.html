@@ -29,6 +29,7 @@
                 </select>
                 <button type="button" class="btn btn-primary" id="vote">vote</button>
                 <button type="button" class="btn btn-primary" id="evening_check">evening check</button>
+                <button type="button" class="btn btn-primary" id="evening_chat">sending chat</button>
             </form>
 
             <form id="form-action" class="form-inline">
@@ -134,13 +135,30 @@
          })
          $("#vote").click(function(e){
              const voteId = document.getElementById("vote_cands").value;
-             if(id!="" || id!="none"){ socket.emit("vote", [voteId]); }
+            //  if(id!="" || id!="none"){ socket.emit("vote", [voteId]); }
+             socket.emit("vote", [voteId]);
              $("#vote_cands").html("");
          });
          socket.on("voteResult", function(result){
              console.log(result);
-             appendLog("We excute " + idToNameMap[result.executedId] + ", and We hope the village become peace");
+             appendLog("We excute " + id2nameMap[result.executedId] + ", and We hope the village become peace");
          })
+
+         // chat
+         $("#evening_chat").click(function(e){
+            const message = $("#name_form").val();
+            if(message == ""){
+                appendLog("input message");
+            } else {
+                $("#name_form").val("");
+                socket.emit("chat", {message: message});
+                e.preventDefault();
+            }
+         });
+         socket.on("chat", function(result){
+             console.log(result);
+             appendLog(id2nameMap[result.userId] + "さんが発言しました:" + result.message)
+         });
 
          // action
          socket.on("actionCandidates", function(ids){
@@ -165,10 +183,10 @@
          //
          socket.on("morningResult", function(result){
              console.log(result);
-             let str = result.deadIds.reduce((ret,id)=>{
-                 ret += ", " + id2nameMap[id];
-                 return ret;
-             }, "");
+                 let str = result.deadIds.reduce((ret,id)=>{
+                     ret += ", " + id2nameMap[id];
+                     return ret;
+                 }, "");
              appendLog("deads" + str);
          });
 

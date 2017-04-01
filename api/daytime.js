@@ -20,7 +20,7 @@ function finishDiscussion(io, socket, village){
 
         console.log("finish discussion: " + user.name);
         if(village.readyToShift()){
-            clearTimeOut(timeOutId);
+            clearTimeout(timeOutId);
             end(io, village);
         }
     };

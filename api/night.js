@@ -28,16 +28,17 @@ function action(io, socket, village){
 
 // chat
 function chat(io, socket, village){
-    return function(message){
+    return function(data){
         // TODO
-        // socket.to(chatRoom).emit();
+        const userId = village.socketIdToUserId(socket.id);
+        io.to(village.users.get(userId).chatRoom).emit("chat", {userId: userId, message: data.message});
     };
 };
 
 // end night (for debug)
 function endNight(io, socket, village){
     return function(){
-        clearTimeOut(timeOutId);
+        clearTimeout(timeOutId);
         end(io, village);
     };
 }
@@ -57,14 +58,12 @@ function begin(io, village){
 
     // action candidates
     const candidatesMap = village.getCandidatesMap();
-    console.log(candidatesMap);
     for(const [id, list] of candidatesMap){
         io.to(village.userIdToSocketId(id)).emit("actionCandidates", list);
     }
 
     // action result (for difinite action)
     const resultMap = village.getResultMap();
-    console.log(resultMap);
     for(const [id, res] of resultMap){
         io.to(village.userIdToSocketId(id)).emit("actionResult", res);
     }
