@@ -23,21 +23,19 @@ const roleNameList = [
 ];
 exports.roleNameList = roleNameList;
 
-exports.defaultRoleSet = function(num){
+exports.defaultRoleSet = function(){
     let ret = new Map();
     for(const name of roleNameList){
         ret.set(name, 0)
     }
 
-    ret.set("Seer", 1);
-    ret.set("Werewolf", Math.floor((num+3)/8)+1);
-    ret.set("Guard",  num > 4 ? 1 : 0);
-    ret.set("Medium", num > 6 ? 1 : 0);
-    ret.set("Madman", num > 8 ? 1 : 0);
-
-    let c = 0;
-    ret.forEach(v => c+=v);
-    ret.set("Villager", c);
+    ret.set("Werewolf", 2);
+    ret.set("Seer",     1);
+    ret.set("Guard",    1);
+    ret.set("Medium",   1);
+    ret.set("Madman",   1);
+    ret.set("Fox",      1);
+    // ret.set("Villager", 1);
 
     return ret
 }
