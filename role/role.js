@@ -6,43 +6,43 @@ const common = require('./common');
 
 
 // Role
-function Role(type = "Role"){
+Role.Name = "Role"
+function Role(name = Role.Name){
     const role = Object.create(Role.prototype);
 
-    role.type = type;
+    role.name = name;
 
     return role;
 }
 
 Role.prototype = {
-    // team represents how to win. (human / werewolf/ other)
-    // team.other : TODO
-    team    : common.type.NONE,
+    // team represents how to win. (human / werewolf / fox / lover(TODO) / other)
+    team : common.type.NONE,
 
-    // speacies represents head count for game-end check.
-    // speacies.other will be ignored
+    // speacies represents head count for game-end check. (human / werewolf/ other)
+    // only (villager / werewolf) will be counted (other type will be ignored)
     species : common.type.NONE,
 
-    // sawAs represents how ze looks from seers
+    // fromSeer represents how ze looks from seers. (human / werewolf / other)
     fromSeer : common.type.NONE,
 
-    // sawAs represents how ze looks from mediums
+    // fromMedium represents how ze looks from mediums. (human / werewolf / other)
     fromMedium : common.type.NONE,
 
-    // these represents which chat room ze will join
-    // chatGroup will be used only if chatType == GROUP
+    // chatType represents which chat room ze will join
+    // chatGroup will be used only if chatType === GROUP
     chatType  : common.chatType.PERSONAL,
     chatGroup : "none",
 
-    // actionCandidates returns options for a night action.
+    // actionCandidates returns option-list for a night action.
     // type: (village, selfId) => [userId].
-    // set null function or return [] to do nothing
-    actionCandidates: null,
+    // return [] to do nothing
+    actionCandidates: (village, selfId) => { return []; },
 
     // actionResult returns result for definite action.
     // type: (village, selfId) => result { subjectId, objectId, type, .. }.
-    // set null function or return {} to do nothing
-    actionResult: null,
+    // return {} to do nothing
+    actionResult: (village, selfId) => { return {}; },
 
     // evalActionNight returns result of action and/or stack it until morning
     // return {} to do nothing in the night (stacking still work)
@@ -50,6 +50,10 @@ Role.prototype = {
 
     // mountEvents mounts event functions
     mountEvents: function(village){},
+
+    // hasWon returns whether ze has won this game, assuming game has already finished.
+    // implement this if team===other
+    hasWon: (village, selfId, winTeam) => { return winTeam === this.team; },
 };
 
 /* memo

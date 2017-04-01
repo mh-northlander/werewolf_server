@@ -11,6 +11,7 @@ module.exports = {
 // import
 const morning = require("./morning");
 const GamePhaseNight = require('../village/phase').GamePhase.NIGHT;
+const util = require("../util");
 
 //// listen
 // action
@@ -59,13 +60,17 @@ function begin(io, village){
     // action candidates
     const candidatesMap = village.getCandidatesMap();
     for(const [id, list] of candidatesMap){
-        io.to(village.userIdToSocketId(id)).emit("actionCandidates", list);
+        if(list.length > 0){
+            io.to(village.userIdToSocketId(id)).emit("actionCandidates", list);
+        }
     }
 
     // action result (for difinite action)
     const resultMap = village.getResultMap();
     for(const [id, res] of resultMap){
-        io.to(village.userIdToSocketId(id)).emit("actionResult", res);
+        if(!util.isEmptyObj(res)){
+            io.to(village.userIdToSocketId(id)).emit("actionResult", res);
+        }
     }
 
     // timer

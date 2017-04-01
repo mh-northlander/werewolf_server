@@ -4,9 +4,14 @@ module.export = {
 };
 
 // import
+const role = require("../role/");
 
-
-//
+// begin
 function begin(io, village){
+    winTeam = village.winTeam();
 
+    io.sockets.emit("gameFinished", {
+        winTeam: winTeam,
+        winIds: village.winUserIds(winTeam),
+    });
 }

@@ -20,7 +20,7 @@ function Guard(){
 }
 
 Guard.prototype = {
-    team   : common.type.HUMAN,
+    team    : common.type.HUMAN,
     species : common.type.HUMAN,
 
     fromSeer   : common.type.HUMAN,
@@ -42,7 +42,7 @@ Guard.prototype = {
     },
 
     evalActionNight: function(village, selfId, act){
-        //
+        // first day
         if(village.phase.dayCount === 0){ return {}; }
 
         // act: { type:"guard", userId }
