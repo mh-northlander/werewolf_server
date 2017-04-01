@@ -56,6 +56,7 @@ function changeRule(io, socket, village){
 function startGame(io, village){
     return function(){
         // set role
+        village.rule.roleSet.set("Villager", village.users.size - village.rule.villageSize());
         let roleList = village.rule.suffledRoleList();
         let idx = 0;
         for(const [userId,user] of village.users){
