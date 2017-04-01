@@ -17,7 +17,7 @@ function Fox(){
 }
 
 Fox.prototype = {
-    team       : common.type.OTHER,
+    team       : common.type.FOX,
     species    : common.type.OTHER,
     fromSeer   : common.type.HUMAN,
     fromMedium : common.type.HUMAN,
