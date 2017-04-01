@@ -21,3 +21,13 @@ module.exports.suffleArray = function(arr){
     }
     return arr;
 };
+
+// isEmptyObj
+module.exports.isEmptyObj = function(obj){
+    for(const key in obj){
+        if(obj.hasOwnProperty(key)){
+            return false;
+        }
+    }
+    return true;
+};

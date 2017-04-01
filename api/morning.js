@@ -9,6 +9,7 @@ module.exports = {
 // import
 const GamePhaseMorning = require('../village/phase').GamePhase.MORNING;
 const dayTime = require("./daytime");
+const after_game = require("./after_game");
 
 
 // morningResultChecked
@@ -38,6 +39,10 @@ function begin(io, village){
 
     // morning result
     io.sockets.emit("morningResult", village.evalActionMorning());
+
+    if(village.isGameFinished()){
+        after_game.Begin(io, village);
+    }
 };
 
 // end
