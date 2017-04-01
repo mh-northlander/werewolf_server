@@ -253,7 +253,7 @@ Village.prototype = {
                 if(       user.role.species === role.common.type.HUMAN){
                     vill_n += 1;
                 } else if(user.role.species === role.common.type.WEREWOLF){
-                    wolf.n += 1;
+                    wolf_n += 1;
                 }
             }
         }

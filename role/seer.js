@@ -4,7 +4,7 @@ module.exports = Seer;
 // imports
 const common = require('./common');
 const Role = require('./role');
-const fox = require("./fox");
+const Fox = require("./fox");
 
 // seer
 Seer.Name = "Seer";
@@ -25,8 +25,9 @@ Seer.prototype = {
     fromMedium : common.type.HUMAN,
 
     actionCandidates: function(village, selfId){
-        // first night
+                // first night
         if(village.phase.dayCount === 0){
+            console.log("first night see");
             switch(village.rule.firstNightSee){
             case Seer.firstNightSee.None:
             case Seer.firstNightSee.Given:  return [];
@@ -46,20 +47,20 @@ Seer.prototype = {
     },
 
     actionResult: function(village, selfId){
+        // only first night && firstNightGiven
         if(village.phase.dayCount !== 0){ return {}; }
-        if(village.rule.firstNightSee !== Seer.firstNightGiven){ return {}; }
+        if(village.rule.firstNightSee !== Seer.firstNightSee.Given){ return {}; }
 
         const cIds = village.listUserIdsWithCondition({
             alive  : true,
             except : [selfId],
             exceptFunc : user => {
-                return (user.role.fromSeer === common.type.WEREWOLF) &&
-                    (fox.isFox(user.role));
+                return (user.role.fromSeer === common.type.WEREWOLF) && (Fox.isFox(user.role));
             },
         });
         const cId = cIds[Math.floor(Math.random() * cIds.length)];
 
-        return evalActionNight(village, selfId, { type: "see", userId: cid });
+        return this.evalActionNight(village, selfId, { type: "see", userId: cid });
     },
 
     evalActionNight: function(village, selfId, act){

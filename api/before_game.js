@@ -63,7 +63,7 @@ function startGame(io, village){
             user.role = role[roleList[idx]]();
             user.role.mountEvents(village);
 
-            io.to(user.socketId).emit("roleAck", user.role.type);
+            io.to(user.socketId).emit("roleAck", user.role.name);
 
             idx++;
         }
@@ -77,7 +77,7 @@ function startGame(io, village){
             }
 
             io.sockets.sockets[user.socketId].join(user.chatRoom);
-            io.to(user.chatRoom).emit("debug", "chat room:" + user.chatRoom);
+            io.to(user.socketId).emit("debug", "chat room:" + user.chatRoom);
         }
 
         // next phase

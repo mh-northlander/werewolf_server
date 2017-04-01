@@ -69,6 +69,7 @@ function begin(io, village){
     const resultMap = village.getResultMap();
     for(const [id, res] of resultMap){
         if(!util.isEmptyObj(res)){
+            console.log(res);
             io.to(village.userIdToSocketId(id)).emit("actionResult", res);
         }
     }
