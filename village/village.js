@@ -111,7 +111,7 @@ Village.prototype = {
     getCandidatesMap: function(){ // => map{ userId: [userId] }
         const map = new Map();
         for(const [id,user] of this.users){
-            if(user.alive && user.role.actionCandidates){
+            if(user.alive){
                 const list = user.role.actionCandidates(this, id);
                 if(list.length !== 0){
                     map.set(id, list);
@@ -123,7 +123,7 @@ Village.prototype = {
     getResultMap: function(){ // => map{ userId: result{} }
         const map = new Map();
         for(const [id,user] of this.users){
-            if(user.alive && user.role.actionResult){
+            if(user.alive){
                 const res = user.role.actionResult(this, id);
                 if(Object.keys(res).length !== 0){
                     map.set(id, res);
@@ -238,6 +238,56 @@ Village.prototype = {
         this.voteMap.clear();
 
         return voteResult;
+    },
+
+
+    // end game
+    isGameFinished: function(){
+        // wolf_n <= 0 || wolf_n >= vil_n
+        let wolf_n = 0;
+        let vill_n = 0;
+        for(const [_, user] of this.users){
+            if(user.alive){
+                if(       user.role.species === role.common.type.HUMAN){
+                    vill_n += 1;
+                } else if(user.role.species === role.common.type.WEREWOLF){
+                    wolf.n += 1;
+                }
+            }
+        }
+        return (wolf_n === 0) || (vill_n <= wolf_n);
+    },
+    winTeam: function(){
+        // lovers (TODO)
+
+        // fox
+        for(const [id, user] of this.users){
+            if(user.role.name === role.Fox.Name && user.alive){
+                return role.common.type.FOX;
+            }
+        }
+
+        // human
+        let wolf_n = 0;
+        for(const [_, user] of this.users){
+            if(user.alive && user.role.species === role.common.type.WEREWOLF){
+                wolf.n += 1;
+            }
+        }
+        if (wolf_n === 0){
+            return role.common.type.HUMAN;
+        }
+        // werewolf
+        return role.common.type.WEREWOLF;
+    },
+    winUserIds: function(winTeam){
+        ret = [];
+        for(const [id, user] of this.users){
+            if(user.role.hasWon(this, id, winTeam)){
+                ret.push(id);
+            }
+        }
+        return ret;
     },
 
 
