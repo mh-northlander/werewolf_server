@@ -1,3 +1,6 @@
+"use strict";
+
+// export
 module.exports = {
     Action: action,
     Chat: chat,
@@ -13,15 +16,18 @@ const morning = require("./morning");
 const GamePhaseNight = require('../village/phase').GamePhase.NIGHT;
 const util = require("../util");
 
-//// listen
+
 // action
 function action(io, socket, village){
     return function(act){
         const userId = village.socketIdToUserId(socket.id);
         const user = village.users.get(userId);
 
+        console.log("act of " + user.name + ":");
+        console.log(act);
+
         const resp = user.role.evalActionNight(village, userId, act);
-        if(resp && resp !== {}){
+        if(!util.isEmptyObj(resp)){
             io.to(village.users.get(userId).chatRoom).emit("actionResult", resp);
         }
     };
@@ -32,7 +38,8 @@ function chat(io, socket, village){
     return function(data){
         // TODO
         const userId = village.socketIdToUserId(socket.id);
-        io.to(village.users.get(userId).chatRoom).emit("chat", {userId: userId, message: data.message});
+        io.to(village.users.get(userId).chatRoom).emit(
+            "chat", { userId: userId, message: data.message });
     };
 };
 
@@ -44,7 +51,6 @@ function endNight(io, socket, village){
     };
 }
 
-//// emit
 // begin
 let timeOutId;
 function begin(io, village){
@@ -57,6 +63,7 @@ function begin(io, village){
         timeCount: phase.secCount,
     });
 
+    console.log("action cands");
     // action candidates
     const candidatesMap = village.getCandidatesMap();
     for(const [id, list] of candidatesMap){
@@ -65,11 +72,11 @@ function begin(io, village){
         }
     }
 
+    console.log("action res");
     // action result (for difinite action)
     const resultMap = village.getResultMap();
     for(const [id, res] of resultMap){
         if(!util.isEmptyObj(res)){
-            console.log(res);
             io.to(village.userIdToSocketId(id)).emit("actionResult", res);
         }
     }

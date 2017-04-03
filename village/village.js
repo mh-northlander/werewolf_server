@@ -1,3 +1,5 @@
+"use strict";
+
 // exports
 module.exports = Village;
 
@@ -86,11 +88,15 @@ Village.prototype = {
 
     // event returns result object (morning / vote)
     // type: ~ => { deadIds, executedId, ~ }
+    event_died: function(objectId, result={}){
+        this.users.get(objectId).alive = false;
+        return result;
+    },
     event_saw: function(subjectId, objectId, result={}){ return result; },
     event_bited: function(subjectId, objectId, success, result={}){
         if(success){ // bite action can fail
             if(!result.deadIds){ result.deadIds = []; }
-            result.deadIds.push(objectIds);
+            result.deadIds.push(objectId);
 
             return this.event_died(objectId, result);
         }
@@ -99,10 +105,6 @@ Village.prototype = {
     event_executed: function(objectId, result={}){
         result.executedId = objectId;
         return this.event_died(objectId, result);
-    },
-    event_died: function(objectId, result={}){
-        this.users.get(objectId).alive = false;
-        return result;
     },
     event_morning: function(result={}){ return result; },
 
@@ -133,9 +135,10 @@ Village.prototype = {
         return map;
     },
     evalActionMorning: function(){ // => {deadIds: [userId], }
-        if(this.phase.dayCount === 1){ return {
-            deadIds: []
-        }; } // first morning
+        // first morning (TODO)
+        if(this.phase.dayCount === 1){
+            return { deadIds: [] };
+        }
 
         let morningResult = {}
         // see
@@ -149,31 +152,34 @@ Village.prototype = {
         if(this.actionMap.has("bite")){
             // summarize all bite action
             const summary = new Map();
-            for(const act of this.actionMap.get("bite")){
-                if(summary.has(act.objectId)){ // init
-                    summary.set(act.objectId, {
-                        powerSum     : 0,
-                        subjectPower : 0,
-                        subjectIds   : [],
-                    });
+            this.actionMap.get("bite").forEach(
+                (act,i,a) => { // act: { subjectId, objectId, power }
+                    if(!summary.has(act.objectId)){ // init
+                        summary.set(act.objectId, {
+                            subjectIds   : [],
+                            subjectPower : 0,
+                            powerSum     : 0,
+                        });
+                    }
+                    if(       act.power  >  summary.get(act.objectId).subjectPower){
+                        summary.get(act.objectId).subjectIds   = [act.subjectId];
+                        summary.get(act.objectId).subjectPower = act.power;
+                    } else if(act.power === summary.get(act.objectId).subjectPower){
+                        summary.get(act.objectId).subjectIds.push(act.subjectId);
+                    }
+                    summary.get(act.objectId).powerSum += act.power;
                 }
-                summary.get(act.objectId).powerSum += act.power
-                if       (act.power  >  summary.get(act.objectId).subjectPower){
-                    summary.get(act.objectId).subjectIds   = [act.subjectId];
-                    summary.get(act.objectId).subjectPower = act.power;
-                } else if(act.power === summary.get(act.objectId).subjectPower){
-                    summary.get(act.objectId).subjectIds.push(act.subjectId);
-                }
-            }
+            );
+
             // pick victim
             let objectIds = [];
             let maxPower = 0;
-            for(const [k,v] of summary){
-                if       (v.powerSum  >  maxPower){
-                    objectIds = [k];
+            for(const [id, v] of summary){
+                if(       v.powerSum  >  maxPower){
+                    objectIds = [id];
                     maxPower  = v.powerSum;
                 } else if(v.powerSum === maxPower){
-                    objectIds.push(k);
+                    objectIds.push(id);
                 }
             }
             // random choice if tie
@@ -181,11 +187,15 @@ Village.prototype = {
             const subjectIds = summary.get(objectId).subjectIds;
             const subjectId  = subjectIds[Math.floor(Math.random() * subjectIds.length)];
 
+            console.log("eval mo:")
             morningResult = this.event_bited(subjectId, objectId, true, morningResult);
         }
 
         // become morning
         morningResult = this.event_morning(morningResult);
+
+        console.log("eval morning result:");
+        console.log(morningResult);
 
         // reset
         this.actionMap.clear();
@@ -264,7 +274,7 @@ Village.prototype = {
 
         // fox
         for(const [id, user] of this.users){
-            if(user.role.name === role.Fox.Name && user.alive){
+            if(user.role.type === role.Fox.Name && user.alive){
                 return role.common.type.FOX;
             }
         }

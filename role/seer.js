@@ -1,3 +1,5 @@
+"use strict";
+
 // exports
 module.exports = Seer;
 
@@ -55,15 +57,17 @@ Seer.prototype = {
             alive  : true,
             except : [selfId],
             exceptFunc : user => {
-                return (user.role.fromSeer === common.type.WEREWOLF) && (Fox.isFox(user.role));
+                return (user.role.fromSeer === common.type.WEREWOLF) || (Fox.isFox(user.role));
             },
         });
         const cId = cIds[Math.floor(Math.random() * cIds.length)];
 
-        return this.evalActionNight(village, selfId, { type: "see", userId: cid });
+        return this.evalActionNight(village, selfId, { type: "see", userId: cId });
     },
 
     evalActionNight: function(village, selfId, act){
+        console.log("seer");
+
         // act: { type:"see", userId }
         // log
         this.log.push(act.userId);
@@ -77,8 +81,8 @@ Seer.prototype = {
         const fromSeer = village.users.get(act.userId).role.fromSeer;
         return {
             objectId : act.userId,
-            type     : fromSeer===common.type.WEREWOLF ? fromSeer : commontype.HUMAN,
-        }
+            type     : fromSeer===common.type.WEREWOLF ? fromSeer : common.type.HUMAN,
+        };
     },
 }
 

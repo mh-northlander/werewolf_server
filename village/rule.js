@@ -1,9 +1,12 @@
+"use strict";
+
 // exports
 module.exports = Rule;
 
 // imports
 const util = require("../util");
 const role = require("../role/");
+
 
 // rule
 function Rule(){

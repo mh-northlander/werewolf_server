@@ -1,3 +1,5 @@
+"use strict";
+
 // exports
 module.exports = Guard;
 
@@ -56,10 +58,10 @@ Guard.prototype = {
     mountEvents: function(village){
         const oldBited = village.event_bited;
         village.event_bited = function(subjectId, objectId, success, result={}){
-            if(objectUserId === this.guardingId){
-                return oldBited(subjectId, objectId, false, result);
+            if(objectId === this.guardingId){
+                return oldBited.call(village, subjectId, objectId, false, result);
             }
-            return oldBited(subjectId, objectId, success, result);
+            return oldBited.call(village, subjectId, objectId, success, result);
         };
     },
 }

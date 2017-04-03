@@ -1,3 +1,5 @@
+"use strict";
+
 // exports
 module.exports = {
     JoinRoom : joinRoom,
@@ -13,6 +15,7 @@ module.exports = {
 const rule = require("../village/rule");
 const role = require("../role")
 const night = require("./night")
+
 
 // join room
 function joinRoom(io, socket, village){
@@ -51,7 +54,6 @@ function changeRule(io, socket, village){
     }
 };
 
-
 // start game
 function startGame(io, village){
     return function(){
@@ -63,7 +65,7 @@ function startGame(io, village){
             user.role = role[roleList[idx]]();
             user.role.mountEvents(village);
 
-            io.to(user.socketId).emit("roleAck", user.role.name);
+            io.to(user.socketId).emit("roleAck", user.role.type);
 
             idx++;
         }

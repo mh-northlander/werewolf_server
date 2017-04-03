@@ -1,3 +1,5 @@
+"use strict";
+
 // export
 module.exports = {
     EveningResultChecked: eveningResultChecked,
@@ -6,11 +8,11 @@ module.exports = {
     End  : end,
 };
 
-
 // import
 const GamePhaseEvening = require('../village/phase').GamePhase.EVENING;
-const night = require('./night');
-const after_game = require("./after_game");
+const night      = require('./night');
+const after_game = require('./after_game');
+
 
 // eveningResultChecked
 function eveningResultChecked(io, socket, village){
@@ -26,7 +28,6 @@ function eveningResultChecked(io, socket, village){
     };
 }
 
-//// emit
 // begin
 function begin(io, village){
     console.log("evening begin");
@@ -42,7 +43,7 @@ function begin(io, village){
     io.sockets.emit("voteResult", village.evalVote());
 
     if(village.isGameFinished()){
-        after_game.Begin(io,village);
+        after_game.Begin(io, village);
     }
 };
 

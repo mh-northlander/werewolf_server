@@ -1,3 +1,5 @@
+"use strict";
+
 // exports
 module.exports = Werewolf;
 
@@ -39,6 +41,8 @@ Werewolf.prototype = {
     },
 
     evalActionNight: function(village, selfId, act){
+        console.log("wolf " + village.users.get(selfId).name);
+
         // act: { type:"bite", userId, power }
         // first night
         if(village.phase.dayCount === 0){ return {}; }
@@ -46,13 +50,13 @@ Werewolf.prototype = {
         const ret = {
             subjectId : selfId,
             objectId  : act.userId,
-            power     : act.power,
+            power     : Number(act.bitePower),
         };
 
         if(!village.actionMap.has("bite")){ village.actionMap.set("bite", []); }
         village.actionMap.get("bite").push(ret);
 
-        return ret;
+        return {}; // don't inform (for raccoon)
     },
 }
 

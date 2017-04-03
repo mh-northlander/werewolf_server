@@ -1,3 +1,5 @@
+"use strict";
+
 exports.common = require('./common');
 
 // role class factories

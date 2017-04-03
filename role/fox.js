@@ -1,3 +1,5 @@
+"use strict";
+
 // exports
 module.exports = Fox;
 
@@ -32,16 +34,16 @@ Fox.prototype = {
 
                 result = village.event_died(objectId, result);
             }
-            return oldSaw(objectId, result);
+            return oldSaw.call(village, objectId, result);
         };
 
         // won't die when bited
         const oldBited = village.event_bited;
         village.event_bited = function(subjectId, objectId, success, result={}){
             if(Fox.isFox(village.users.get(objectId).role)){
-                return oldBited(subjectId, objectId, false, result);
+                return oldBited.call(village, subjectId, objectId, false, result);
             }
-            return oldBited(subjectId, objectId, success, result);
+            return oldBited.call(village, subjectId, objectId, success, result);
         };
     },
 }

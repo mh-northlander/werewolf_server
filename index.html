@@ -135,7 +135,8 @@
          })
          $("#vote").click(function(e){
              const voteId = document.getElementById("vote_cands").value;
-            //  if(id!="" || id!="none"){ socket.emit("vote", [voteId]); }
+             //  if(id!="" || id!="none"){ socket.emit("vote", [voteId]); }
+             appendLog(voteId)
              socket.emit("vote", [voteId]);
              $("#vote_cands").html("");
          });
@@ -172,7 +173,7 @@
          $("#action").click(function(e){
              const actId = document.getElementById("action_cands").value;
              const power = document.getElementById("bite_power").value;
-             if(id!="" || id!="none"){ socket.emit("action", {userId:actId, bitePower:power}); }
+             socket.emit("action", {userId:actId, bitePower:power});
              $("#action_cands").html("");
          });
          socket.on("actionResult", function(result){
@@ -183,11 +184,20 @@
          //
          socket.on("morningResult", function(result){
              console.log(result);
-                 let str = result.deadIds.reduce((ret,id)=>{
-                     ret += ", " + id2nameMap[id];
-                     return ret;
-                 }, "");
-             appendLog("deads" + str);
+             let str = result.deadIds.reduce((ret,id)=>{
+                 return ret + id2nameMap[id] + ", ";
+             }, "");
+             appendLog("deads:" + str);
+         });
+
+         //
+         socket.on("gameFinished", function(result){
+             console.log(result);
+             appendLog(result.winTeam + "wins!");
+             let str = result.winIds.reduce((ret,id)=>{
+                 return ret + id2nameMap[id] + ", ";
+             }, "");
+             appendLog("win: " + str);
          });
 
         </script>
