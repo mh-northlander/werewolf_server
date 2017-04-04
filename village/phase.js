@@ -50,7 +50,7 @@ Phase.prototype = {
             this.secCount = nightTime ? nightTime : DefaultNightTime;
             break;
         case GamePhase.DAYTIME:
-            this.secCount = dayTime ? dayTime : DefaultDayTime;
+            this.secCount = dayTime   ? dayTime   : DefaultDayTime;
             break;
         default:
             this.secCount = -1;

@@ -16,18 +16,21 @@ const evening = require('./evening');
 // vate
 function vote(io, socket, village){
     return function(vote){
+        const userId = village.socketIdToUserId(socket.id);
+
         // vote: [userId]
-        console.log(village.users.get(village.socketIdToUserId(socket.id)).name +
+        console.log(village.users.get(userId).name +
                     " votes to " + village.users.get(vote[0]).name);
 
-        const userId = village.socketIdToUserId(socket.id);
+        // log
+        village.log.day[village.phase.dayCount].vote[userId] = vote;
+
+
         if(!village.users.get(userId).readyToShift){ // prevent multi-vote
             village.addVote(userId, vote);
+            village.users.get(userId).readyToShift = true;
         }
 
-        // check
-        const user = village.users.get(userId);
-        user.readyToShift = true;
         if(village.readyToShift()){
             end(io, village);
         }

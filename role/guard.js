@@ -58,10 +58,8 @@ Guard.prototype = {
     mountEvents: function(village){
         const oldBited = village.event_bited;
         village.event_bited = function(subjectId, objectId, success, result={}){
-            if(objectId === this.guardingId){
-                return oldBited.call(village, subjectId, objectId, false, result);
-            }
-            return oldBited.call(village, subjectId, objectId, success, result);
+            const ret = (objectId !== this.guardingId) && success;
+            return oldBited.call(village, subjectId, objectId, ret, result);
         };
     },
 }
