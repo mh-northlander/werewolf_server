@@ -191,7 +191,7 @@
          });
 
          //
-         socket.on("gameFinished", function(result){
+         socket.on("gameResult", function(result){
              console.log(result);
              appendLog(result.winTeam + "wins!");
              let str = result.winIds.reduce((ret,id)=>{

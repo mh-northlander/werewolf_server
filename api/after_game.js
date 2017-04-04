@@ -13,7 +13,7 @@ const role = require("../role/");
 function begin(io, village){
     const winTeam = village.winTeam();
 
-    io.sockets.emit("gameFinished", {
+    io.sockets.emit("gameResult", {
         winTeam: winTeam,
         winIds:  village.winUserIds(winTeam),
     });
