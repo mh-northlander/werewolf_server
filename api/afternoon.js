@@ -16,23 +16,25 @@ const evening = require('./evening');
 // vate
 function vote(io, socket, village){
     return function(vote){
-        const userId = village.socketIdToUserId(socket.id);
+        if(phaseCheck(io, socket, village, "vote")){
+            const userId = village.socketIdToUserId(socket.id);
 
-        // vote: [userId]
-        console.log(village.users.get(userId).name +
-                    " votes to " + village.users.get(vote[0]).name);
+            // vote: [userId]
+            console.log(village.users.get(userId).name +
+                        " votes to " + village.users.get(vote[0]).name);
 
-        // log
-        village.log.day[village.phase.dayCount].vote[userId] = vote;
+            // log
+            village.log.day[village.phase.dayCount].vote[userId] = vote;
 
 
-        if(!village.users.get(userId).readyToShift){ // prevent multi-vote
-            village.addVote(userId, vote);
-            village.users.get(userId).readyToShift = true;
-        }
+            if(!village.users.get(userId).readyToShift){ // prevent multi-vote
+                village.addVote(userId, vote);
+                village.users.get(userId).readyToShift = true;
+            }
 
-        if(village.readyToShift()){
-            end(io, village);
+            if(village.readyToShift()){
+                end(io, village);
+            }
         }
     };
 };

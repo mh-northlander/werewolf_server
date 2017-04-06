@@ -24,40 +24,43 @@ function action(io, socket, village){
             const userId = village.socketIdToUserId(socket.id);
             const user = village.users.get(userId);
 
-        if(user.readyToShift){
-            console.log("error@action: multi-action not allowed");
-            return;
+            if(user.readyToShift){
+                console.log("error@action: multi-action not allowed");
+                return;
+            }
+
+            console.log("act of " + user.name + ":");
+            console.log(act);
+
+            const resp = user.role.evalActionNight(village, userId, act);
+            user.readyToShift = true;
+
+            if(!util.isEmptyObj(resp)){
+                io.to(village.users.get(userId).chatRoom).emit("actionResult", resp);
+            }
+
+            // log
+            village.log.day[village.phase.dayCount].action[userId] = act;
         }
-
-        console.log("act of " + user.name + ":");
-        console.log(act);
-
-        const resp = user.role.evalActionNight(village, userId, act);
-        user.readyToShift = true;
-
-        if(!util.isEmptyObj(resp)){
-            io.to(village.users.get(userId).chatRoom).emit("actionResult", resp);
-        }
-
-        // log
-        village.log.day[village.phase.dayCount].action[userId] = act;
-    };
+    }
 };
 
 // chat
 function chat(io, socket, village){
     return function(data){
-        const userId = village.socketIdToUserId(socket.id);
-        io.to(village.users.get(userId).chatRoom).emit(
-            "chat", { userId: userId, message: data.message });
+        if(io, socket, village, "chat"){
+            const userId = village.socketIdToUserId(socket.id);
+            io.to(village.users.get(userId).chatRoom).emit(
+                "chat", { userId: userId, message: data.message });
 
-        // log
-        village.log.chat.push({
-            dayCount : village.phase.dayCount,
-            chatRoom : village.users.get(userId).chatRoom,
-            userId   : userId,
-            message  : data.message,
-        });
+            // log
+            village.log.chat.push({
+                dayCount : village.phase.dayCount,
+                chatRoom : village.users.get(userId).chatRoom,
+                userId   : userId,
+                message  : data.message,
+            });
+        }
     };
 };
 
