@@ -1,3 +1,5 @@
+"use strict";
+
 exports.type = {
     HUMAN    : "human",
     WEREWOLF : "werewolf",

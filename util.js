@@ -1,4 +1,4 @@
-// util funcs
+"use strict";
 
 // randomString: generate random string of given length made of [a-z0-9]
 module.exports.randomString = function(length){

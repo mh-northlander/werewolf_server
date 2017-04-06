@@ -1,3 +1,5 @@
+"use strict";
+
 // imports
 const before_game = require("./before_game");
 const after_game  = require("./after_game");

@@ -1,3 +1,5 @@
+"use strict";
+
 // exports
 module.exports = {
     JoinRoom : joinRoom,
@@ -14,6 +16,7 @@ const rule = require("../village/rule");
 const phase = require("../village/phase")
 const role = require("../role")
 const night = require("./night")
+
 
 // join room
 function joinRoom(io, socket, village){
@@ -55,11 +58,11 @@ function changeRule(io, socket, village){
     }
 };
 
-
 // start game
 function startGame(io, village){
     return function(){
         // set role
+        village.rule.roleSet.set("Villager", village.users.size - village.rule.villageSize());
         let roleList = village.rule.suffledRoleList();
         let idx = 0;
         for(const [userId,user] of village.users){
@@ -80,7 +83,7 @@ function startGame(io, village){
             }
 
             io.sockets.sockets[user.socketId].join(user.chatRoom);
-            io.to(user.chatRoom).emit("debug", "chat room:" + user.chatRoom);
+            io.to(user.socketId).emit("debug", "chat room:" + user.chatRoom);
         }
 
         // next phase

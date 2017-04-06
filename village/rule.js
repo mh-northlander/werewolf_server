@@ -1,9 +1,12 @@
+"use strict";
+
 // exports
 module.exports = Rule;
 
 // imports
 const util = require("../util");
 const role = require("../role/");
+
 
 // rule
 function Rule(){
@@ -22,7 +25,7 @@ function Rule(){
     rule.firstNightSee = role.Seer.firstNightSee.Given;
 
     // set of role in this village. Map(name -> num)
-    rule.roleSet = role.defaultRoleSet(8);
+    rule.roleSet = role.defaultRoleSet();
 
     return rule;
 };
@@ -52,6 +55,14 @@ Rule.prototype = {
             }
         }
         return util.suffleArray(a);
+    },
+
+    villageSize: function(){
+        let sum = 0;
+        for(const n of this.roleSet.values()){
+            sum += n;
+        }
+        return sum;
     },
 
     // util

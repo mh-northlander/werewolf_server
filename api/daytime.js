@@ -1,3 +1,5 @@
+"use strict";
+
 // export
 module.exports = {
     FinishDiscussion: finishDiscussion,
@@ -24,8 +26,7 @@ function finishDiscussion(io, socket, village){
             end(io, village);
         }
     };
-}
-
+};
 
 // begin
 let timeOutId;

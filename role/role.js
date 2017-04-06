@@ -1,3 +1,5 @@
+"use strict";
+
 // exports
 module.exports = Role;
 
@@ -7,10 +9,10 @@ const common = require('./common');
 
 // Role
 Role.Name = "Role"
-function Role(name = Role.Name){
+function Role(type = Role.Name){
     const role = Object.create(Role.prototype);
 
-    role.name = name;
+    role.type = type;
 
     return role;
 }

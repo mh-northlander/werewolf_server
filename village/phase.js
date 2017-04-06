@@ -1,7 +1,10 @@
+"use strict";
+
 // exports
 module.exports = Phase;
 
 // imports
+
 
 // const
 const DefaultDayTime = 7;   // sec
@@ -17,6 +20,7 @@ const GamePhase = {
     AFTERGAME  : "after_game",  // game end
 };
 Phase.GamePhase = GamePhase
+
 
 // Phase
 function Phase(){
