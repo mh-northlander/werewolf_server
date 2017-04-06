@@ -10,9 +10,15 @@ module.exports = Log;
 function Log(){
     const log = Object.create(Log.prototype);
 
-    log.action = {};
-    log.chat = {};
-    log.result = {};
+    // [{ dayCount, chatRoom, userId, message }]
+    log.chat = [];
+
+    // [{ vote, action, morningDeads, eveningDeads }]
+    // vote : { sbjId -> objId }
+    // action : { sbjId -> { type, objId, bitePower }}
+    // deads : [{id, reason, phase}]
+    // reason \in { bite, execute, see }
+    log.day = [];
 
     return log;
 }
