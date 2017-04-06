@@ -16,7 +16,7 @@ const afternoon = require("./afternoon");
 // finishDiscussion
 function finishDiscussion(io, socket, village){
     return function(){
-        if(io, socket, village, "finishDiscussion"){
+        if(phaseCheck(io, socket, village, "finishDiscussion")){
             const userId = village.socketIdToUserId(socket.id);
             const user = village.users.get(userId);
             user.readyToShift = true;

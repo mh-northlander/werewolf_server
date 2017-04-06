@@ -57,7 +57,7 @@ function end(io, village){
 
 // validation
 function phaseCheck(io, socket, village, eventName){
-    if(village.phase.gamePhase === GamePhaseAfternoon){
+    if(village.phase.gamePhase === GamePhaseEvening){
         return true
     } else {
         console.log("badRequest:", eventName, "can't call at", village.phase.gamePhase, "by", village.socketIdToUserId(socket.id));
