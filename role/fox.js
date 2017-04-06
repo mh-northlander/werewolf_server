@@ -32,7 +32,7 @@ Fox.prototype = {
                 if(!result.deadIds){ result.deadIds = []; }
                 result.deadIds.push(objectId);
 
-                result = village.event_died(objectId, result);
+                result = village.event_died(objectId, "see", result);
             }
             return oldSaw.call(village, objectId, result);
         };
@@ -40,10 +40,8 @@ Fox.prototype = {
         // won't die when bited
         const oldBited = village.event_bited;
         village.event_bited = function(subjectId, objectId, success, result={}){
-            if(Fox.isFox(village.users.get(objectId).role)){
-                return oldBited.call(village, subjectId, objectId, false, result);
-            }
-            return oldBited.call(village, subjectId, objectId, success, result);
+            const ret = !Fox.isFox(village.users.get(objectId).role) && success;
+            return oldBited.call(village, subjectId, objectId, ret, result);
         };
     },
 }

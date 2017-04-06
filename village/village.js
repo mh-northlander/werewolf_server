@@ -20,10 +20,10 @@ function Village(villageId){
     village.rule = Rule();
 
     village.phase = Phase();
-    village.log = [Log()];
+    village.log   = Log();
 
-    village.voteMap = new Map();
-    village.actionMap = new Map();
+    village.voteMap   = new Map(); // objctId -> {[subjectId], count}
+    village.actionMap = new Map(); // sbjId -> act
 
     return village;
 }
@@ -78,6 +78,13 @@ Village.prototype = {
         this.phase.phaseShift(nPhase, this.rule.dayTime, this.rule.nightTime);
 
         // reset flg
+        if(!this.log.day[this.phase.dayCount]){
+            this.log.day[this.phase.dayCount] = {
+                vote   : {},
+                action : {},
+                deads  : [],
+            };
+        }
         for(const [k,v] of this.users){
             v.readyToShift = false;
         }
@@ -88,8 +95,15 @@ Village.prototype = {
 
     // event returns result object (morning / vote)
     // type: ~ => { deadIds, executedId, ~ }
-    event_died: function(objectId, result={}){
+    event_died: function(objectId, reason, result={}){
         this.users.get(objectId).alive = false;
+
+        // log
+        this.log.day[this.phase.dayCount].deads.push({
+            userId : objectId,
+            phase  : this.phase.gamePhase,
+            reason : reason,
+        });
         return result;
     },
     event_saw: function(subjectId, objectId, result={}){ return result; },
@@ -98,13 +112,13 @@ Village.prototype = {
             if(!result.deadIds){ result.deadIds = []; }
             result.deadIds.push(objectId);
 
-            return this.event_died(objectId, result);
+            return this.event_died(objectId, "bite", result);
         }
         return result;
     },
     event_executed: function(objectId, result={}){
         result.executedId = objectId;
-        return this.event_died(objectId, result);
+        return this.event_died(objectId, "execute", result);
     },
     event_morning: function(result={}){ return result; },
 
@@ -212,7 +226,7 @@ Village.prototype = {
         })
     },
     addVote: function(subjectId, vote){ // => _
-        // voteStack: Map(objectId: {subjectIds, count})
+        // voteMap: Map(objectId: {subjectIds, count})
         // vote: [userId]
         for(const userId of vote){
             if(!this.voteMap.has(userId)){ this.voteMap.set(userId, {

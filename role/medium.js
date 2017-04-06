@@ -12,8 +12,10 @@ const Role = require('./role');
 Medium.Name = "Medium";
 
 function Medium(){
-    const medium = Object.create(Medium.prototype);
+    let medium = Object.create(Medium.prototype);
     Object.assign(medium, Role(Medium.Name))
+
+    medium.executedId = "";
 
     return medium;
 }
@@ -28,13 +30,19 @@ Medium.prototype = {
         // first night
         if(village.phase.dayCount === 0){ return {}; }
 
-        return {}; // TODO: vote log
-
-        const objectId  = village.log[village.phase.dayCount].execution.executedId;
-        const fromMed = village.users.get(objectId).role.fromMedium;
+        const fromMed = village.users.get(this.executedId).role.fromMedium;
         return {
-            objectId : objectId,
+            objectId : executedId,
             result   : fromMed===common.type.WEREWOLF ? fromMed : common.type.HUMAN,
+        };
+    },
+
+    mountEvents: function(village){
+        // log execute
+        const oldExec = village.event_executed;
+        village.event_executed = function(objectId, result={}){
+            this.executedId = objectId;
+            return oldExec.call(village, objectId, result);
         };
     },
 }
