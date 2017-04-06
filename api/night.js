@@ -101,11 +101,10 @@ function end(io, village){
 
 // validation
 function phaseCheck(io, socket, village, eventName){
-    if(village.phase.gamePhase === phase.GamePhase.NIGHT){
+    if(village.phase.gamePhase === GamePhaseNight){
         return true
     } else {
         console.log("badRequest:", eventName, "can't call at", village.phase.gamePhase, "by", village.socketIdToUserId(socket.id));
-        // TODO:before_gameだとjoinRoomに対してはユーザーの特定がIDだとできないのでundefinedになる
         io.to(socket.id).emit("error", {statusCode:400, message:"badRequest: "+eventName+" can't call at "+ village.phase.gamePhase})
         return false
     }
