@@ -13,7 +13,7 @@ module.exports = {
 
 // imports
 const rule = require("../village/rule");
-const phase = require("../village/phase")
+const GamePhaseBeforeGame = require("../village/phase").GamePhase.BEFOREGAME
 const role = require("../role")
 const night = require("./night")
 
@@ -100,7 +100,7 @@ function startGame(io,socket, village){
 
 // validation
 function phaseCheck(io, socket, village, eventName){
-    if(village.phase.gamePhase === phase.GamePhase.BEFOREGAME){
+    if(village.phase.gamePhase === GamePhaseBeforeGame){
         return true
     } else {
         console.log("badRequest:", eventName, "can't call at", village.phase.gamePhase, "by", village.socketIdToUserId(socket.id));
