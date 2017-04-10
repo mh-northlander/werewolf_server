@@ -11,21 +11,23 @@ module.exports = {
 // import
 const GamePhaseDaytime = require('../village/phase').GamePhase.DAYTIME;
 const afternoon = require("./afternoon");
+const common = require("./common")
 
 
 // finishDiscussion
 function finishDiscussion(io, socket, village){
     return function(){
-        if(phaseCheck(io, socket, village, "finishDiscussion")){
-            const userId = village.socketIdToUserId(socket.id);
-            const user = village.users.get(userId);
-            user.readyToShift = true;
+        if(common.IsValidPhase(io, socket, village, GamePhaseDaytime, "finishDiscussion") !== true){
+            return
+        }
+        const userId = village.socketIdToUserId(socket.id);
+        const user = village.users.get(userId);
+        user.readyToShift = true;
 
-            console.log("finish discussion: " + user.name);
-            if(village.readyToShift()){
-                clearTimeout(timeOutId);
-                end(io, village);
-            }
+        console.log("finish discussion: " + user.name);
+        if(village.readyToShift()){
+            clearTimeout(timeOutId);
+            end(io, village);
         }
     };
 };
@@ -52,15 +54,3 @@ function end(io, village){
     console.log("daytime end");
     afternoon.Begin(io, village);
 };
-
-// validation
-function phaseCheck(io, socket, village, eventName){
-    if(village.phase.gamePhase === GamePhaseDaytime){
-        return true
-    } else {
-        console.log("badRequest:", eventName, "can't call at", village.phase.gamePhase, "by", village.socketIdToUserId(socket.id));
-        // TODO:before_gameだとjoinRoomに対してはユーザーの特定がIDだとできないのでundefinedになる
-        io.to(socket.id).emit("error", {statusCode:400, message:"badRequest: "+eventName+" can't call at "+ village.phase.gamePhase})
-        return false
-    }
-}
