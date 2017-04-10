@@ -15,62 +15,68 @@ module.exports = {
 const morning = require("./morning");
 const GamePhaseNight = require('../village/phase').GamePhase.NIGHT;
 const util = require("../util");
+const common = require("./common")
 
 
 // action
 function action(io, socket, village){
     return function(act){
-        if(phaseCheck(io, socket, village, "action")){
-            const userId = village.socketIdToUserId(socket.id);
-            const user = village.users.get(userId);
-
-            if(user.readyToShift){
-                console.log("error@action: multi-action not allowed");
-                return;
-            }
-
-            console.log("act of " + user.name + ":");
-            console.log(act);
-
-            const resp = user.role.evalActionNight(village, userId, act);
-            user.readyToShift = true;
-
-            if(!util.isEmptyObj(resp)){
-                io.to(village.users.get(userId).chatRoom).emit("actionResult", resp);
-            }
-
-            // log
-            village.log.day[village.phase.dayCount].action[userId] = act;
+        if(common.IsValidPhase(io, socket, village, GamePhaseNight, "action") !== true){
+            return
         }
+
+        const userId = village.socketIdToUserId(socket.id);
+        const user = village.users.get(userId);
+
+        if(user.readyToShift){
+            console.log("error@action: multi-action not allowed");
+            return;
+        }
+
+        console.log("act of " + user.name + ":");
+        console.log(act);
+
+        const resp = user.role.evalActionNight(village, userId, act);
+        user.readyToShift = true;
+
+        if(!util.isEmptyObj(resp)){
+            io.to(village.users.get(userId).chatRoom).emit("actionResult", resp);
+        }
+
+        // log
+        village.log.day[village.phase.dayCount].action[userId] = act;
     }
 };
 
 // chat
 function chat(io, socket, village){
     return function(data){
-        if(io, socket, village, "chat"){
-            const userId = village.socketIdToUserId(socket.id);
-            io.to(village.users.get(userId).chatRoom).emit(
-                "chat", { userId: userId, message: data.message });
-
-            // log
-            village.log.chat.push({
-                dayCount : village.phase.dayCount,
-                chatRoom : village.users.get(userId).chatRoom,
-                userId   : userId,
-                message  : data.message,
-            });
+        if(common.IsValidPhase(io, socket, village, GamePhaseNight, "chat") !== true){
+            return
         }
+
+        const userId = village.socketIdToUserId(socket.id);
+        io.to(village.users.get(userId).chatRoom).emit(
+            "chat", { userId: userId, message: data.message });
+
+        // log
+        village.log.chat.push({
+            dayCount : village.phase.dayCount,
+            chatRoom : village.users.get(userId).chatRoom,
+            userId   : userId,
+            message  : data.message,
+        });
     };
 };
 
 // end night (for debug)
 function endNight(io, socket, village){
     return function(){
-        if(phaseCheck(io, socket, village, "endNight")){
-            clearTimeout(timeOutId);
-            end(io, village);
+        if(common.IsValidPhase(io, socket, village, GamePhaseNight, "chat") !== true){
+            return
         }
+        clearTimeout(timeOutId);
+        end(io, village);
     };
 }
 
@@ -115,14 +121,3 @@ function end(io, village){
     // TODO 未決定行動のランダム決定
     morning.Begin(io, village);
 };
-
-// validation
-function phaseCheck(io, socket, village, eventName){
-    if(village.phase.gamePhase === GamePhaseNight){
-        return true
-    } else {
-        console.log("badRequest:", eventName, "can't call at", village.phase.gamePhase, "by", village.socketIdToUserId(socket.id));
-        io.to(socket.id).emit("error", {statusCode:400, message:"badRequest: "+eventName+" can't call at "+ village.phase.gamePhase})
-        return false
-    }
-}
