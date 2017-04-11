@@ -12,11 +12,15 @@ module.exports = {
 const GamePhaseEvening = require('../village/phase').GamePhase.EVENING;
 const night      = require('./night');
 const after_game = require('./after_game');
+const common = require("./common")
 
 
 // eveningResultChecked
 function eveningResultChecked(io, socket, village){
     return function(){
+        if(common.IsValidPhase(io, socket, village, GamePhaseEvening, "eveningResultChecked") !== true){
+            return
+        }
         const userId = village.socketIdToUserId(socket.id);
         const user = village.users.get(userId);
         user.readyToShift = true;
@@ -25,6 +29,7 @@ function eveningResultChecked(io, socket, village){
         if(village.readyToShift()){
             end(io, village);
         }
+
     };
 }
 

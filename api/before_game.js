@@ -13,13 +13,17 @@ module.exports = {
 
 // imports
 const rule = require("../village/rule");
+const GamePhaseBeforeGame = require("../village/phase").GamePhase.BEFOREGAME
 const role = require("../role")
 const night = require("./night")
-
+const common = require("./common")
 
 // join room
 function joinRoom(io, socket, village){
     return function(data){
+        if(common.IsValidPhase(io, socket, village, GamePhaseBeforeGame, "joinRoom") !== true){
+            return
+        }
         village.addUser(data.userId, socket.id, data.name);
 
         // list of {id,name}
@@ -30,6 +34,9 @@ function joinRoom(io, socket, village){
 // exit room
 function exitRoom(io, socket, village){
     return function(){
+        if(common.IsValidPhase(io, socket, village, GamePhaseBeforeGame, "exitRoom") !== true){
+            return
+        }
         const userId = village.socketIdToUserId(socket.id)
         village.removeUser(userId);
 
@@ -41,6 +48,9 @@ function exitRoom(io, socket, village){
 // change name
 function changeName(io, socket, village){
     return function(ruleObj){
+        if(common.IsValidPhase(io, socket, village, GamePhaseBeforeGame, "changeName") !== true){
+            return
+        }
         village.addUser(data.userId, socket.id, data.name);
         io.sockets.emit("memberChanged", village.listUsers());
     }
@@ -49,14 +59,20 @@ function changeName(io, socket, village){
 // change rule
 function changeRule(io, socket, village){
     return function(ruleObj){
+        if(common.IsValidPhase(io, socket, village, GamePhaseBeforeGame, "changeRule") !== true){
+            return
+        }
         village.updateRule(ruleObj);
         io.sockets.emit('ruleChanged', village.Rule.toJSON());
     }
 };
 
 // start game
-function startGame(io, village){
+function startGame(io,socket, village){
     return function(){
+        if(common.IsValidPhase(io, socket, village, GamePhaseBeforeGame, "startGame") !== true){
+            return
+        }
         // set role
         village.rule.roleSet.set("Villager", village.users.size - village.rule.villageSize());
         let roleList = village.rule.suffledRoleList();
