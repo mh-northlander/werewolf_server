@@ -11,11 +11,15 @@ module.exports = {
 // imports
 const GamePhaseAfternoon = require('../village/phase').GamePhase.AFTERNOON;
 const evening = require('./evening');
+const common = require("./common")
 
 
 // vate
 function vote(io, socket, village){
     return function(vote){
+        if(common.IsValidPhase(io, socket, village, GamePhaseAfternoon, "vote") !== true){
+            return
+        }
         const userId = village.socketIdToUserId(socket.id);
 
         // vote: [userId]

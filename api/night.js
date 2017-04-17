@@ -15,11 +15,16 @@ module.exports = {
 const morning = require("./morning");
 const GamePhaseNight = require('../village/phase').GamePhase.NIGHT;
 const util = require("../util");
+const common = require("./common")
 
 
 // action
 function action(io, socket, village){
     return function(act){
+        if(common.IsValidPhase(io, socket, village, GamePhaseNight, "action") !== true){
+            return
+        }
+
         const userId = village.socketIdToUserId(socket.id);
         const user = village.users.get(userId);
 
@@ -40,12 +45,16 @@ function action(io, socket, village){
 
         // log
         village.log.day[village.phase.dayCount].action[userId] = act;
-    };
+    }
 };
 
 // chat
 function chat(io, socket, village){
     return function(data){
+        if(common.IsValidPhase(io, socket, village, GamePhaseNight, "chat") !== true){
+            return
+        }
+
         const userId = village.socketIdToUserId(socket.id);
         io.to(village.users.get(userId).chatRoom).emit(
             "chat", { userId: userId, message: data.message });
@@ -63,6 +72,9 @@ function chat(io, socket, village){
 // end night (for debug)
 function endNight(io, socket, village){
     return function(){
+        if(common.IsValidPhase(io, socket, village, GamePhaseNight, "chat") !== true){
+            return
+        }
         clearTimeout(timeOutId);
         end(io, village);
     };

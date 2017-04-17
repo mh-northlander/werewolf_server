@@ -11,11 +11,15 @@ module.exports = {
 // import
 const GamePhaseDaytime = require('../village/phase').GamePhase.DAYTIME;
 const afternoon = require("./afternoon");
+const common = require("./common")
 
 
 // finishDiscussion
 function finishDiscussion(io, socket, village){
     return function(){
+        if(common.IsValidPhase(io, socket, village, GamePhaseDaytime, "finishDiscussion") !== true){
+            return
+        }
         const userId = village.socketIdToUserId(socket.id);
         const user = village.users.get(userId);
         user.readyToShift = true;
