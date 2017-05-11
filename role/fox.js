@@ -29,6 +29,7 @@ Fox.prototype = {
         const oldSaw = village.event_saw;
         village.event_saw = function(subjectId, objectId, result={}){
             if(Fox.isFox(village.users.get(objectId).role)){
+                console.log("fox saw")
                 if(!result.deadIds){ result.deadIds = []; }
                 result.deadIds.push(objectId);
 

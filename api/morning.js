@@ -34,7 +34,10 @@ function morningResultChecked(io, socket, village){
 
 // begin
 function begin(io, village){
-    console.log("morning begin");
+    // log
+    console.log("morning begin. log of last day:");
+    console.log(village.log.day[village.phase.dayCount]);
+
     // shift phase
     const phase = village.shiftPhase(GamePhaseMorning);
     io.sockets.emit("phaseChanged", {

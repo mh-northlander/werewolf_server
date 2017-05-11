@@ -77,11 +77,11 @@ Village.prototype = {
         console.log("shift: " + this.phase.gamePhase + " to " + nPhase);
         this.phase.phaseShift(nPhase, this.rule.dayTime, this.rule.nightTime);
 
-        // reset flg
+        // reset
         if(!this.log.day[this.phase.dayCount]){
             this.log.day[this.phase.dayCount] = {
-                vote   : {},
-                action : {},
+                vote   : new Map(),
+                action : new Map(),
                 deads  : [],
             };
         }

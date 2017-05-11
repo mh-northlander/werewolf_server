@@ -27,7 +27,7 @@ Seer.prototype = {
     fromMedium : common.type.HUMAN,
 
     actionCandidates: function(village, selfId){
-                // first night
+        // first night
         if(village.phase.dayCount === 0){
             console.log("first night see");
             switch(village.rule.firstNightSee){
@@ -61,6 +61,12 @@ Seer.prototype = {
             },
         });
         const cId = cIds[Math.floor(Math.random() * cIds.length)];
+
+        // log
+        village.log.day[village.phase.dayCount].action.set(selfId, {
+            type  : "see",
+            objId : cId,
+        });
 
         return this.evalActionNight(village, selfId, { type: "see", userId: cId });
     },

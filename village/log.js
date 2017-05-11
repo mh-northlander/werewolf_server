@@ -14,11 +14,12 @@ function Log(){
     log.chat = [];
 
     // [{ vote, action, morningDeads, eveningDeads }]
-    // vote : { sbjId -> objId }
-    // action : { sbjId -> { type, objId, bitePower }}
-    // deads : [{id, reason, phase}]
-    // reason \in { bite, execute, see }
     log.day = [];
+    log.day[0] = {
+        vote  : new Map(), // vote   : { sbjId -> [objId] }
+        action: new Map(), // action : { sbjId -> { type, objId, bitePower }}
+        deads : [],        // deads  : [{id, reason, phase}], reason \in { bite, execute, see }
+    };
 
     return log;
 }

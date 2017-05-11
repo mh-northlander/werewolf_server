@@ -20,32 +20,30 @@ const common = require("./common")
 
 // action
 function action(io, socket, village){
-    return function(act){
+    return function(act){ // act: {}
+        // validation
         if(common.IsValidPhase(io, socket, village, GamePhaseNight, "action") !== true){
             return
         }
-
         const userId = village.socketIdToUserId(socket.id);
         const user = village.users.get(userId);
-
         if(user.readyToShift){
             console.log("error@action: multi-action not allowed");
             return;
         }
 
-        console.log("act of " + user.name + ":");
-        console.log(act);
+        // log
+        village.log.day[village.phase.dayCount].action.set(userId, act);
+        console.log("act of " + user.name + ": ", act);
 
+        //
         const resp = user.role.evalActionNight(village, userId, act);
         user.readyToShift = true;
 
         if(!util.isEmptyObj(resp)){
             io.to(village.users.get(userId).chatRoom).emit("actionResult", resp);
         }
-
-        // log
-        village.log.day[village.phase.dayCount].action[userId] = act;
-    }
+    };
 };
 
 // chat

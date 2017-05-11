@@ -111,7 +111,7 @@
              appendLog(pairs.reduce((ret,p)=>{ret.push(p.name); return ret;},[]));
          });
 
-         socket.on("phaseChange", function(data){
+         socket.on("phaseChanged", function(data){
              appendLog(data.phase + " of day " + data.dayCount + ", sec:" + data.timeCount);
          });
          socket.on("roleAck", function(roleName){
@@ -147,14 +147,14 @@
 
          // chat
          $("#evening_chat").click(function(e){
-            const message = $("#name_form").val();
-            if(message == ""){
-                appendLog("input message");
-            } else {
-                $("#name_form").val("");
-                socket.emit("chat", {message: message});
-                e.preventDefault();
-            }
+             const message = $("#name_form").val();
+             if(message == ""){
+                 appendLog("input message");
+             } else {
+                 $("#name_form").val("");
+                 socket.emit("chat", {message: message});
+                 e.preventDefault();
+             }
          });
          socket.on("chat", function(result){
              console.log(result);
